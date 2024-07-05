@@ -53,13 +53,14 @@ This project is the backend for my portfolio website. It is built using Flask, a
 4. **Set up the MySQL database:**
 
    - Install MySQL on your machine.
-   - Create a database for the project.
+   - look at `BioMorocco/BackEnd/mysql/mysql-startup.sql` file
+   - to setup Mysql just run in root directory of BackEnd
 
-   ```sql
-   -- working on it ...
+   ```bash
+   cat BackEnd/mysql/mysql-startup.sql | sudo mysql -u root
    ```
 
-5. **Configure environment variables:**
+5. **environment variables:**
 
    // working on it ...
 
