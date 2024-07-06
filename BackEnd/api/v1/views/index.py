@@ -35,14 +35,14 @@ def status():
 @app_views.route("/stats", strict_slashes=False, methods=["GET"])
 def stats():
     """return json list count all tables"""
-    from models import storage
+    from api.v1.app import AUTH
 
-    Stores = storage.count(Store)
-    categories = storage.count(Category)
-    products = storage.count(Product)
-    users = storage.count(User)
-    projects = storage.count(Order)
-    reviews = storage.count(Review)
+    Stores = AUTH.count(Store)
+    categories = AUTH.count(Category)
+    products = AUTH.count(Product)
+    users = AUTH.count(User)
+    projects = AUTH.count(Order)
+    reviews = AUTH.count(Review)
     return make_response(jsonify({
         "store": Stores,
         "category": categories,
