@@ -66,7 +66,7 @@ This project is the backend for my portfolio website. It is built using Flask, a
 
    ```Bash
    # just run console to test models.
-   ./run
+   ./run <api or console>
    ```
 
 6. **Run Mysql database:**
@@ -81,14 +81,18 @@ This project is the backend for my portfolio website. It is built using Flask, a
 7. **Run the application:**
 
    ```bash
-   AllEnv python3 -m api.v1.app
+   ./run api
    ```
 
    The application should now be running on `http://127.0.0.1:5000`.
 
 ## API Endpoints
 
-working on it ...
+`index :`
+
+- GET /: Say welcome to api.
+- GET /status: status of our api and some information.
+- GET /stats: count all tables.
 
 ## License
 
