@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# test with console.
+BioMrc_USER="BioMrc" BioMrc_PWD="BioMrc2024" BioMrc_HOST="localhost" BioMrc_DB="BioMrcDB" ./console.py
