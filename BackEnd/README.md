@@ -62,10 +62,11 @@ This project is the backend for my portfolio website. It is built using Flask, a
 
 5. **environment variables:**
 
-   // working on it ...
+   store it in run file
 
    ```Bash
-   # working on it ...
+   # just run console to test models.
+   ./run
    ```
 
 6. **Run Mysql database:**
