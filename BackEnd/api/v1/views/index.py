@@ -3,7 +3,7 @@
 
 from flask import jsonify, make_response
 from api.v1.views import app_views
-# from models import storage
+from models import storage
 from models.user import User
 from models.order import Order
 from models.review import Review
@@ -35,14 +35,14 @@ def status():
 @app_views.route("/stats", strict_slashes=False, methods=["GET"])
 def stats():
     """return json list count all tables"""
-    from api.v1.app import AUTH
+    # from models import storage
 
-    Stores = AUTH.count(Store)
-    categories = AUTH.count(Category)
-    products = AUTH.count(Product)
-    users = AUTH.count(User)
-    projects = AUTH.count(Order)
-    reviews = AUTH.count(Review)
+    Stores = storage.count(Store)
+    categories = storage.count(Category)
+    products = storage.count(Product)
+    users = storage.count(User)
+    projects = storage.count(Order)
+    reviews = storage.count(Review)
     return make_response(jsonify({
         "store": Stores,
         "category": categories,
@@ -51,3 +51,25 @@ def stats():
         "projects": projects,
         "reviews": reviews
     }), 200)
+
+
+@app_views.route("/categories", strict_slashes=False, methods=["GET"])
+def categories():
+    """return json list count all tables"""
+    from api.v1.app import AUTH
+
+    categories = storage.all(Category).values()
+    return make_response(jsonify([
+        category.to_dict() for category in categories
+    ]), 200)
+
+
+@app_views.route("/products", strict_slashes=False, methods=["GET"])
+def products():
+    """return json list count all tables"""
+    # from api.v1.app import AUTH
+
+    products = storage.all(Product).values()
+    return make_response(jsonify([
+        product.to_dict() for product in products
+    ]), 200)

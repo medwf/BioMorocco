@@ -1,53 +1,30 @@
 from flask import jsonify, make_response, request, abort, redirect
 from api.v1.views import app_views
-
-
-@app_views.route('/profile', methods=['GET'], strict_slashes=False)
-def profile():
-    """get profile based on session id"""
-    # from api.v1.app import AUTH
-
-    # session_id = request.cookies.get('session_id', None)
-    # if session_id:
-    #     user = AUTH.get_user_from_session_id(session_id)
-    # if user:
-    return jsonify({'user': request.current_user.to_dict()}), 200
-    # abort(403)
-
-
-@app_views.route('/users', methods=['POST'], strict_slashes=False)
-def users():
-    """create a user with post methods"""
-    from api.v1.app import AUTH
-
-    email = request.form.get('email', None)
-    password = request.form.get('password', None)
-    # print(email, password)
-    if email and password:
-        try:
-            AUTH.register_user(email, password)
-        except ValueError:
-            return jsonify({'message': 'email already registered'}), 400
-        return jsonify({'email': email, 'message': 'user created'}), 200
-    return jsonify({'message': 'should have email and password'})
+from bcrypt import checkpw
 
 
 @app_views.route('/login', methods=['POST'], strict_slashes=False)
 def session():
     """create session post module"""
     from api.v1.app import AUTH
-
-    email = request.form.get('email', None)
-    password = request.form.get('password', None)
-    if email and password:
-        if AUTH.valid_login(email, password):
-            session_id = AUTH.create_session(email)
-            if session_id:
-                response = jsonify({'email': email, 'message': 'logged in'})
-                response.set_cookie('session_id', session_id)
-                return response
+    data = request.get_json(force=True, silent=True)
+    if data:
+        email = data.get('email', None)
+        password = data.get('password', None)
+        # print(email, password)
+        if email and password:
+            user = AUTH.valid_login(email, password)
+            # print("i am here", user)
+            if user:
+                # print("/login", user.to_dict())
+                session_id = AUTH.create_session(user)
+                if session_id:
+                    response = jsonify(
+                        {'email': email, 'message': 'logged in'})
+                    response.set_cookie('session_id', session_id)
+                    return response
         return jsonify({'email': email, 'message': 'check your email and password!'})
-    abort(401)
+    return jsonify({'message': 'check your data send'})
 
 
 @app_views.route('/logout', methods=['DELETE'], strict_slashes=False)
@@ -55,45 +32,81 @@ def logout():
     """delete session"""
     from api.v1.app import AUTH
 
-    # session_id = request.cookies.get('session_id', None)
-    # if session_id:
-    #     user = AUTH.get_user_from_session_id(session_id)
-    # if user:
-    # if request.current_user:
-    AUTH.destroy_session(request.current_user.id)
+    AUTH.destroy_session(request.user)
     return redirect('/api/v1/')
-    # abort(403)
+
+
+@app_views.route('/profile', methods=['GET'], strict_slashes=False)
+def profile():
+    """get profile based on session id"""
+    return jsonify({
+        'user': request.user.to_dict(),
+        'cart': request.user.cart.to_dict(),
+        'cartItems': [item.to_dict() for item in request.user.cart.cartItems]
+    }), 200
+
+
+@app_views.route('/signUp', methods=['POST'], strict_slashes=False)
+def users():
+    """create a user with post methods"""
+    from api.v1.app import AUTH
+
+    data = request.get_json(force=True, silent=True)
+    if data:
+        email = data.get('email', None)
+        password = data.get('password', None)
+
+        if email and password:
+            if AUTH.register_user(data):
+                return jsonify({'email': email, 'message': 'user created'}), 200
+            return jsonify({'message': 'email already registered'}), 400
+        return jsonify({'message': 'should have email and password'})
+    return jsonify({'message': 'check your data send'})
+
+
+@app_views.route('/users', methods=['PUT'], strict_slashes=False)
+def UpdateUser():
+    """delete session"""
+    from models import storage
+    data = request.get_json(force=True, silent=True)
+    if not data:
+        return jsonify({'message': 'check your data send'})
+
+    storage.update_user(request.user, **data)
+    return jsonify({'message': 'Your Information updated!'})
+
+
+@app_views.route('/users', methods=['DELETE'], strict_slashes=False)
+def deleteUser():
+    """delete session"""
+    from api.v1.app import AUTH
+    from models import storage
+
+    AUTH.destroy_session(request.user)
+    cart = request.user.cart
+    for cartItem in cart.cartItems:
+        cartItem.delete()
+    cart.delete()
+    request.user.delete()
+    storage.save()
+    return jsonify({'message': 'Your account was deleted!'})
 
 
 @app_views.route('/reset_password', methods=['POST'], strict_slashes=False)
-def genTokenTo_reset_password():
-    """Reset password"""
-    from api.v1.app import AUTH
-
-    email = request.form.get('email', None)
-    if email:
-        try:
-            token = AUTH.get_reset_password_token(email)
-            return jsonify({"email": email, "reset_token": token}), 200
-        except ValueError:
-            pass
-    abort(403)
-
-
-@app_views.route('/reset_password', methods=['PUT'], strict_slashes=False)
 def reset_password():
-    """reset password"""
-    from api.v1.app import AUTH
-
-    email = request.form.get('email', None)
-    reset_token = request.form.get('reset_token', None)
-    new_password = request.form.get('new_password', None)
-    if email and reset_token and new_password:
-        try:
-            AUTH.update_password(reset_token, new_password)
-            return jsonify(
-                {'email': email, 'message': 'Password updated'}
-            ), 200
-        except ValueError:
-            pass
-    abort(403)
+    """Reset password"""
+    data = request.get_json(force=True, silent=True)
+    if data:
+        password = data.get('password', None)
+        confirmed_password = data.get('confirmed_password', None)
+        new_password = data.get('new_password', None)
+        if password and confirmed_password and new_password:
+            if password == confirmed_password:
+                if checkpw(password.encode(), request.user.password.encode()):
+                    request.user.password = new_password
+                    request.user.save()
+                    return jsonify({'message': 'password changed'})
+                return jsonify({'message': 'password not correct'})
+            return jsonify({'message': 'password be same as confirmed'})
+        return jsonify({'message': 'should have password and confirmed and new one'})
+    return jsonify({'message': 'check your data send'})

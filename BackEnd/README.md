@@ -88,11 +88,30 @@ This project is the backend for my portfolio website. It is built using Flask, a
 
 ## API Endpoints
 
-`index :`
+**index :**
 
-- GET /: Say welcome to api.
-- GET /status: status of our api and some information.
-- GET /stats: count all tables.
+`PATHs` that is accessible to anyone.
+
+- GET `/`: Say welcome to api.
+- GET `/status`: status of our api and some information.
+- GET `/stats`: count all tables.
+- GET `/categories`: get all categories
+- GET `/products`: get all products
+
+**User :**
+
+`PATHs` that is accessible to anyone.
+
+- GET `/signUp`: create new User.
+- POST `/login`: log in user based on email and password. create session
+
+To access to `PATHs`, authentication is required.
+
+- GET `/profile`: get data user
+- PUT `/users`: update user data. password not included
+- DELETE `/logout`: log out user based on cookies session
+- DELETE `/users`: delete all user account
+- POST `/reset_password`: change password based on old one
 
 ## License
 
