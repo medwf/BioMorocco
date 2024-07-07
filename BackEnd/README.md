@@ -86,6 +86,10 @@ This project is the backend for my portfolio website. It is built using Flask, a
 
    The application should now be running on `http://127.0.0.1:5000`.
 
+## The API endpoint swagger documentation.
+
+[URL for swagger documentation](http://localhost:5000/api/docs)
+
 ## API Endpoints
 
 **index :**
