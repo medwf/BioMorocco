@@ -5,32 +5,65 @@ Main module For The Flask Web Application
 # from models import storage
 from api.v1.auth.session_db_auth import SessionDBAuth
 from api.v1.views import app_views
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, send_from_directory
 from flask_cors import CORS
-from os import getenv
+from flask_swagger_ui import get_swaggerui_blueprint
+from os import getenv, getcwd
+
+SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
+API_URL = '/static/swagger.json'
 
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
-CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+CORS(app, resources={r"/api/v1/*": {"origins": "*"}},
+     supports_credentials=True)
 
 AUTH = SessionDBAuth()
+
+# Call factory function to create our blueprint
+swaggerui_blueprint = get_swaggerui_blueprint(
+    # Swagger UI static files will be mapped to '{SWAGGER_URL}/dist/'
+    SWAGGER_URL,
+    API_URL,
+    config={  # Swagger UI config overrides
+        'app_name': "Test application"
+    },
+    # oauth_config={  # OAuth config. See https://github.com/swagger-api/swagger-ui#oauth2-configuration .
+    #    'clientId': "your-client-id",
+    #    'clientSecret': "your-client-secret-if-required",
+    #    'realm': "your-realms",
+    #    'appName': "your-app-name",
+    #    'scopeSeparator': " ",
+    #    'additionalQueryStringParams': {'test': "hello"}
+    # }
+)
+
+app.register_blueprint(swaggerui_blueprint)
 
 
 @app.before_request
 def beforeRequest() -> str:
     """handle auth before request"""
+    print(request.path)
     if AUTH.require_auth(request.path, [
             '/api/v1/',
             '/api/v1/stat*',
             '/api/v1/signUp/',
-            '/api/v1/login/'
+            '/api/v1/login/',
+            '/api/docs/*',
+            '/static/*'
     ]):
         if AUTH.session_cookie(request) is None:
             abort(401)
         request.user = AUTH.current_user(request)
         if request.user is None:
             abort(403)
+
+
+@app.route("/static/swagger.json")
+def specs():
+    return send_from_directory(getcwd(), "static/swagger.json")
 
 
 @app.teardown_appcontext

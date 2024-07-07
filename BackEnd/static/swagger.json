@@ -1,0 +1,218 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Bio Morocco API",
+    "version": "1.0.0",
+    "description": "API documentation for the E-commerce platform"
+  },
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Operations related to user authentication"
+    },
+    { "name": "User", "description": "Operations related to users" },
+    { "name": "Store", "description": "Operations related to stores" },
+    {
+      "name": "Category",
+      "description": "Operations related to product categories"
+    },
+    { "name": "Product", "description": "Operations related to products" },
+    {
+      "name": "Review",
+      "description": "Operations related to product reviews"
+    },
+    { "name": "Order", "description": "Operations related to orders" },
+    {
+      "name": "CartItem",
+      "description": "Operations related to items in the shopping cart"
+    }
+  ],
+  "paths": {
+    "/api/v1/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Log in a user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "format": "password" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User logged in successfully",
+            "headers": {
+              "Set-Cookie": {
+                "description": "Session ID",
+                "schema": {
+                  "type": "string",
+                  "example": "session_id=abcd1234; Path=/; HttpOnly"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Login successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/logout": {
+      "delete": {
+        "tags": ["Authentication"],
+        "summary": "Log out a user",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User logged out successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Logout successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Session ID is required"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/signUp": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Sign up a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "format": "password" },
+                  "first_name": { "type": "string" },
+                  "last_name": { "type": "string" },
+                  "country": { "type": "string" },
+                  "city": { "type": "string" },
+                  "state": { "type": "string" },
+                  "address": { "type": "string" },
+                  "phone": { "type": "string" }
+                },
+                "required": [
+                  "email",
+                  "password",
+                  "first_name",
+                  "last_name",
+                  "country",
+                  "city",
+                  "state",
+                  "address",
+                  "phone"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User signed up successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Sign up successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or user already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Email already in use"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

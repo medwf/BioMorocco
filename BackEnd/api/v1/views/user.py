@@ -19,12 +19,11 @@ def session():
                 # print("/login", user.to_dict())
                 session_id = AUTH.create_session(user)
                 if session_id:
-                    response = jsonify(
-                        {'email': email, 'message': 'logged in'})
+                    response = jsonify({'message': 'Login successful'})
                     response.set_cookie('session_id', session_id)
                     return response
-        return jsonify({'email': email, 'message': 'check your email and password!'})
-    return jsonify({'message': 'check your data send'})
+        return jsonify({'message': 'Invalid email or password'}), 401
+    return jsonify({'message': 'check your data send'}), 401
 
 
 @app_views.route('/logout', methods=['DELETE'], strict_slashes=False)
@@ -33,7 +32,7 @@ def logout():
     from api.v1.app import AUTH
 
     AUTH.destroy_session(request.user)
-    return redirect('/api/v1/')
+    return jsonify({'message': 'Logout successful'})
 
 
 @app_views.route('/profile', methods=['GET'], strict_slashes=False)
