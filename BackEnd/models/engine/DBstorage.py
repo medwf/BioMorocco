@@ -2,7 +2,6 @@
 """database model"""
 from os import getenv
 from sqlalchemy import create_engine
-from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 from models.base import Base
 from models.user import User
@@ -82,10 +81,8 @@ class DBStorage:
         Returns the object based on the class name and its ID, or
         None if not found
         """
-        import models
         if id is None or cls not in classes.values():
             return None
-
         return self.__session.query(User).filter_by(id=id).one()
 
     def count(self, cls=None):
@@ -102,28 +99,34 @@ class DBStorage:
             count = len(self.all(cls).values())
         return count
 
-    def add_user(self, email: str, hashed_password: str) -> User:
-        """add_user to add a new user in the db"""
-        new_user = User(email=email, password=hashed_password)
-        self.new(new_user)
-        self.save()
-        return new_user
-
     def find_user_by(self, **kwargs) -> User:
         """search for an user in database"""
+        # print(kwargs)
         for key, value in kwargs.items():
+            # print("find user", key, value)
             if hasattr(User, key):
                 Filter = {key: value}
-                return self.__session.query(User).filter_by(**Filter).one()
-            else:
-                raise InvalidRequestError()
-        raise NoResultFound()
+                # print("find user", Filter)
+                try:
+                    return self.__session.query(User).filter_by(**Filter).one()
+                except NoResultFound:
+                    return None
+        return None
 
-    def update_user(self, user_id: int, **kwargs) -> None:
+    def add_user(self, data) -> User:
+        """add_user to add a new user in the db"""
+        new_user = User(email=data['email'], password=data['password'])
+        del data['password']
+        del data['email']
+        self.update_user(new_user, **data)
+
+        return new_user
+
+    def update_user(self, user: User, **kwargs) -> None:
         """update user in database based on id"""
-        user = self.find_user_by(id=user_id)
         for key, value in kwargs.items():
-            if not hasattr(user, key):
-                raise ValueError
+            if not hasattr(user, key) or key == 'password':
+                continue
             setattr(user, key, value)
-        self.save()
+        # print(user)
+        user.save()

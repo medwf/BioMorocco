@@ -6,6 +6,7 @@ from sqlalchemy import (
     Column, String, Integer, ForeignKey, Boolean
 )
 from sqlalchemy.orm import relationship
+from bcrypt import hashpw, gensalt, checkpw
 
 
 class User(BaseModel, Base):
@@ -49,8 +50,8 @@ class User(BaseModel, Base):
         """initializes user"""
         super().__init__(*args, **kwargs)
 
-    # def __setattr__(self, name, value):
-    #     """sets a password with md5 encryption"""
-    #     if name == "password":
-    #         value = md5(value.encode()).hexdigest()
-    #     super().__setattr__(name, value)
+    def __setattr__(self, name, value):
+        """sets a password with hashpw encryption"""
+        if name == "password":
+            value = hashpw(value.encode(), gensalt())
+        super().__setattr__(name, value)
