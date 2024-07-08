@@ -20,6 +20,8 @@ classes = {
     "User": User, "Store": Store
 }
 
+ignore = ('password', 'user_id', 'id', 'created_at', 'updated_at')
+
 
 class DBStorage:
     """interact with the Mysql database"""
@@ -118,15 +120,15 @@ class DBStorage:
         new_user = User(email=data['email'], password=data['password'])
         del data['password']
         del data['email']
-        self.update_user(new_user, **data)
+        self.update(new_user, **data)
 
         return new_user
 
-    def update_user(self, user: User, **kwargs) -> None:
-        """update user in database based on id"""
+    def update(self, obj: object, **kwargs) -> None:
+        """update object in database based object"""
         for key, value in kwargs.items():
-            if not hasattr(user, key) or key == 'password':
+            if not hasattr(obj, key) or key in ignore:
                 continue
-            setattr(user, key, value)
-        # print(user)
-        user.save()
+            setattr(obj, key, value)
+        # print(obj)
+        obj.save()

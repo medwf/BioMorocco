@@ -10,24 +10,108 @@
       "name": "Authentication",
       "description": "Operations related to user authentication"
     },
-    { "name": "User", "description": "Operations related to users" },
-    { "name": "Store", "description": "Operations related to stores" },
+    {
+      "name": "User",
+      "description": "Operations related to users"
+    },
+    {
+      "name": "Store",
+      "description": "Operations related to stores"
+    },
     {
       "name": "Category",
       "description": "Operations related to product categories"
     },
-    { "name": "Product", "description": "Operations related to products" },
+    {
+      "name": "Product",
+      "description": "Operations related to products"
+    },
     {
       "name": "Review",
       "description": "Operations related to product reviews"
     },
-    { "name": "Order", "description": "Operations related to orders" },
+    {
+      "name": "Order",
+      "description": "Operations related to orders"
+    },
     {
       "name": "CartItem",
       "description": "Operations related to items in the shopping cart"
     }
   ],
   "paths": {
+    "/api/v1/signUp": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Sign up a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "format": "password" },
+                  "first_name": { "type": "string" },
+                  "last_name": { "type": "string" },
+                  "country": { "type": "string" },
+                  "city": { "type": "string" },
+                  "state": { "type": "string" },
+                  "address": { "type": "string" },
+                  "phone": { "type": "string" }
+                },
+                "required": [
+                  "email",
+                  "password",
+                  "first_name",
+                  "last_name",
+                  "country",
+                  "city",
+                  "state",
+                  "address",
+                  "phone"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User signed up successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Sign up successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or user already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Email already in use"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/login": {
       "post": {
         "tags": ["Authentication"],
@@ -142,10 +226,151 @@
         }
       }
     },
-    "/api/v1/signUp": {
-      "post": {
-        "tags": ["Authentication"],
-        "summary": "Sign up a new user",
+    "/api/v1/profile": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get user profile",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "example": 1 },
+                        "email": {
+                          "type": "string",
+                          "example": "user@example.com"
+                        },
+                        "first_name": { "type": "string", "example": "John" },
+                        "last_name": { "type": "string", "example": "Doe" },
+                        "country": { "type": "string", "example": "USA" },
+                        "city": { "type": "string", "example": "New York" },
+                        "state": { "type": "string", "example": "NY" },
+                        "address": {
+                          "type": "string",
+                          "example": "123 Main St"
+                        },
+                        "phone": { "type": "string", "example": "555-5555" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Session ID is required"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reset_password": {
+      "put": {
+        "tags": ["User"],
+        "summary": "Reset user password",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": { "type": "string", "example": "new_password" },
+                  "confirmed": { "type": "string", "example": "new_password" }
+                },
+                "required": ["password", "confirmed"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password reset successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Session ID is required"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "put": {
+        "tags": ["User"],
+        "summary": "Update user data",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -154,7 +379,6 @@
                 "type": "object",
                 "properties": {
                   "email": { "type": "string", "format": "email" },
-                  "password": { "type": "string", "format": "password" },
                   "first_name": { "type": "string" },
                   "last_name": { "type": "string" },
                   "country": { "type": "string" },
@@ -162,25 +386,14 @@
                   "state": { "type": "string" },
                   "address": { "type": "string" },
                   "phone": { "type": "string" }
-                },
-                "required": [
-                  "email",
-                  "password",
-                  "first_name",
-                  "last_name",
-                  "country",
-                  "city",
-                  "state",
-                  "address",
-                  "phone"
-                ]
+                }
               }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": "User signed up successfully",
+          "200": {
+            "description": "User data updated successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -188,7 +401,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "Sign up successful"
+                      "example": "User data updated successfully"
                     }
                   }
                 }
@@ -196,7 +409,7 @@
             }
           },
           "400": {
-            "description": "Invalid input or user already exists",
+            "description": "Session ID missing or invalid",
             "content": {
               "application/json": {
                 "schema": {
@@ -204,7 +417,331 @@
                   "properties": {
                     "error": {
                       "type": "string",
-                      "example": "Email already in use"
+                      "example": "Session ID is required"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["User"],
+        "summary": "Delete user",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Session ID is required"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/store": {
+      "get": {
+        "tags": ["Store"],
+        "summary": "Get store data",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "store": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "example": 1 },
+                        "name": { "type": "string", "example": "Store Name" },
+                        "description": {
+                          "type": "string",
+                          "example": "Store Description"
+                        },
+                        "image": {
+                          "type": "string",
+                          "example": "https://example.com/image.png"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Session ID is required"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Store"],
+        "summary": "Update store data",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "Updated Store Name" },
+                  "description": {
+                    "type": "string",
+                    "example": "Updated Store Description"
+                  },
+                  "image": {
+                    "type": "string",
+                    "example": "https://example.com/updated_image.png"
+                  }
+                },
+                "required": ["name", "description", "image"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Store data updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Store data updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Session ID is required"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Store"],
+        "summary": "Create new store",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "New Store Name" },
+                  "description": {
+                    "type": "string",
+                    "example": "New Store Description"
+                  },
+                  "image": {
+                    "type": "string",
+                    "example": "https://example.com/new_image.png"
+                  }
+                },
+                "required": ["name", "description", "image"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Store created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Store created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Session ID is required"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Store"],
+        "summary": "Delete store",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": { "type": "string", "example": "user_password" }
+                },
+                "required": ["password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Store deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Store deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Session ID is required"
                     }
                   }
                 }
