@@ -92,9 +92,9 @@ class SessionDBAuth():
 
     def create_session(self, user: User) -> str:
         """Create session id using uuid"""
-        storage.update_user(user, session_id=_generate_uuid())
+        storage.update(user, session_id=_generate_uuid())
         return user.session_id
 
     def destroy_session(self, user: User) -> None:
         """destroy session based on user id"""
-        storage.update_user(user, session_id=None)
+        storage.update(user, session_id=None)

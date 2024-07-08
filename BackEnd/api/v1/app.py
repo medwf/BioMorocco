@@ -45,7 +45,7 @@ app.register_blueprint(swaggerui_blueprint)
 @app.before_request
 def beforeRequest() -> str:
     """handle auth before request"""
-    print(request.path)
+    # print(request.path)
     if AUTH.require_auth(request.path, [
             '/api/v1/',
             '/api/v1/stat*',
