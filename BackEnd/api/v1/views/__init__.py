@@ -13,3 +13,4 @@ from api.v1.views.store import *
 from api.v1.views.category import *
 from api.v1.views.product import *
 from api.v1.views.cartItem import *
+from api.v1.views.review import *

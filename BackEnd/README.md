@@ -156,6 +156,17 @@ To access to `PATHs`, authentication is required.
 - POST `/api/v1/categories/<category_id>/cartItems`: add new cartItems.
 - DELETE `/api/v1/cartItems/<id>`: delete cartItems.
 
+**reviews :**
+
+- GET `/products/<int:product_id>/reviews`: get reviews data
+- GET `/products/<int:product_id>/reviews/<int:review_id>`: get review data by id
+
+To access to `PATHs`, authentication is required.
+
+- PUT `/api/v1/reviews/<id>`: update reviews data.
+- POST `/products/<int:product_id>/reviews`: add new reviews.
+- DELETE `/api/v1/reviews/<id>`: delete reviews.
+
 ## License
 
 This project is licensed under the MIT License.
