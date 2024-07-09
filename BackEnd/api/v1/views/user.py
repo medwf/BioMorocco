@@ -31,7 +31,7 @@ def reset_password():
     data = request.get_json(force=True, silent=True)
     if data:
         password = data.get('password', None)
-        confirmed_password = data.get('confirmed_password', None)
+        confirmed_password = data.get('confirmed', None)
         new_password = data.get('new_password', None)
         if password and confirmed_password and new_password:
             if password == confirmed_password:
