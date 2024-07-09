@@ -85,7 +85,10 @@ class DBStorage:
         """
         if id is None or cls not in classes.values():
             return None
-        return self.__session.query(User).filter_by(id=id).one()
+        try:
+            return self.__session.query(cls).filter_by(id=id).one()
+        except NoResultFound:
+            return None
 
     def count(self, cls=None):
         """
