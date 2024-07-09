@@ -126,6 +126,36 @@ To access to `PATHs`, authentication is required.
 - POST `/api/v1/store`: create new store.
 - DELETE `/api/v1/store`: delete store.
 
+**Categories :**
+
+To access to `PATHs`, authentication is required.
+
+- GET `/api/v1/categories`: get categories data
+- GET `/api/v1/categories/<id>`: get category data by id
+- PUT `/api/v1/categories/<id>`: update categories data.
+- POST `/api/v1/categories`: create new categories.
+- DELETE `/api/v1/categories/<id>`: delete categories.
+
+**Products :**
+
+- GET `/api/v1/products`: get products data
+- GET `/api/v1/products/<id>`: get product data by id
+
+To access to `PATHs`, authentication is required.
+
+- PUT `/api/v1/products/<id>`: update products data.
+- POST `/api/v1/categories/<category_id>/products`: create new products.
+- DELETE `/api/v1/products/<id>`: delete products.
+
+**cartItems :**
+
+To access to `PATHs`, authentication is required.
+
+- GET `/api/v1/cartItems`: get cartItems data
+- PUT `/api/v1/cartItems/<id>`: update cartItems data.
+- POST `/api/v1/categories/<category_id>/cartItems`: add new cartItems.
+- DELETE `/api/v1/cartItems/<id>`: delete cartItems.
+
 ## License
 
 This project is licensed under the MIT License.

@@ -10,3 +10,6 @@ from api.v1.views.index import *
 from api.v1.views.authentication import *
 from api.v1.views.user import *
 from api.v1.views.store import *
+from api.v1.views.category import *
+from api.v1.views.product import *
+from api.v1.views.cartItem import *

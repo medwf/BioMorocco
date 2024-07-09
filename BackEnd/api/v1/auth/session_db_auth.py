@@ -27,10 +27,12 @@ class SessionDBAuth():
     """Auth class to interact with the authentication database.
     """
 
-    def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
+    def require_auth(self, method: str, path: str, excluded_paths: List[str]) -> bool:
         """require auth"""
         if path is None or excluded_paths is None or len(excluded_paths) == 0:
             return True
+        if method == 'GET' and (('categories' in path) or ('products' in path)):
+            return False
         # add allowing * of end of excluded path
         for exclude in excluded_paths:
             # print(f"\033[33m *1 {exclude} {path}\033[0m")

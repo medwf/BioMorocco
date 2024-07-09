@@ -51,25 +51,3 @@ def stats():
         "projects": projects,
         "reviews": reviews
     }), 200)
-
-
-@app_views.route("/categories", strict_slashes=False, methods=["GET"])
-def categories():
-    """return json list count all tables"""
-    from api.v1.app import AUTH
-
-    categories = storage.all(Category).values()
-    return make_response(jsonify([
-        category.to_dict() for category in categories
-    ]), 200)
-
-
-@app_views.route("/products", strict_slashes=False, methods=["GET"])
-def products():
-    """return json list count all tables"""
-    # from api.v1.app import AUTH
-
-    products = storage.all(Product).values()
-    return make_response(jsonify([
-        product.to_dict() for product in products
-    ]), 200)
