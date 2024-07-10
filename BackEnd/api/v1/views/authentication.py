@@ -14,10 +14,10 @@ def users():
 
         if email and password:
             if AUTH.register_user(data):
-                return jsonify({'email': email, 'message': 'user created'}), 200
-            return jsonify({'message': 'email already registered'}), 400
-        return jsonify({'message': 'should have email and password'})
-    return jsonify({'message': 'check your data send'})
+                return jsonify({'email': email, 'message': 'user created'}), 201
+            return jsonify({'message': 'Email already registered'}), 400
+        return jsonify({'message': 'should have email and password'}), 400
+    return jsonify({'message': 'check your data send'}), 400
 
 
 @app_views.route('/login', methods=['POST'], strict_slashes=False)
@@ -39,8 +39,8 @@ def session():
                     response = jsonify({'message': 'Login successful'})
                     response.set_cookie('session_id', session_id)
                     return response
-        return jsonify({'message': 'Invalid email or password'}), 401
-    return jsonify({'message': 'check your data send'}), 401
+        return jsonify({'error': 'Invalid email or password'}), 400
+    return jsonify({'error': 'check your data send'}), 400
 
 
 @app_views.route('/logout', methods=['DELETE'], strict_slashes=False)
