@@ -167,6 +167,15 @@ To access to `PATHs`, authentication is required.
 - POST `/products/<int:product_id>/reviews`: add new reviews.
 - DELETE `/api/v1/reviews/<id>`: delete reviews.
 
+**Orders :**
+
+To access to `PATHs`, authentication is required.
+
+- GET `/product/<int:product_id>/orders`: get orders by product_id.
+- GET `/users/orders`: get order by user_id.
+- POST `/product/<int:product_id>/orders`: add new order.
+- POST `/users/orders`: add new order.
+
 ## License
 
 This project is licensed under the MIT License.
