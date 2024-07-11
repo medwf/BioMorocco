@@ -2,19 +2,20 @@
 """authentication module"""
 
 # from models import storage
-from models.engine.DBstorage import DBStorage
 # from .auth import Auth
 from bcrypt import checkpw
 from models.user import User
-from sqlalchemy.exc import InvalidRequestError
-from sqlalchemy.orm.exc import NoResultFound
 from typing import List, Dict
 from models import storage
 from os import getenv
 
-# def _hash_password(password: str) -> bytes:
-#     """methods that hashed password"""
-#     return hashpw(password.encode(), gensalt())
+TIME_EXPIRATION = {
+    'sec': 1,
+    'min': 60,
+    'hr': 60 * 60,
+    "day": 60 * 60 * 24,
+    "week": 60 * 60 * 24 * 7
+}
 
 
 def _generate_uuid() -> str:
@@ -57,20 +58,23 @@ class SessionDBAuth():
 
     def current_user(self, request=None):
         """return an instance based on cookie value"""
+        from api.v1.app import redis_client
+
         if request is None:
             return None
         session_id = self.session_cookie(request)
         if not session_id:
             return None
-        user = self.get_user_from_session_id(session_id)
+        user_id = redis_client.get(f"auth_{session_id}")
+        user = storage.get(User, user_id)
         return user if user else None
 
-    def get_user_from_session_id(self, session_id: str) -> User:
-        """get user based on session id"""
-        if session_id:
-            user = storage.find_user_by(session_id=session_id)
-            return user if user else None
-        return None
+    # def get_user_from_session_id(self, session_id: str) -> User:
+    #     """get user based on session id"""
+    #     if session_id:
+    #         user = storage.find_user_by(session_id=session_id)
+    #         return user if user else None
+    #     return None
 
     def register_user(self, data: Dict) -> User:
         """register user based on email and password"""
@@ -94,9 +98,21 @@ class SessionDBAuth():
 
     def create_session(self, user: User) -> str:
         """Create session id using uuid"""
-        storage.update(user, session_id=_generate_uuid())
-        return user.session_id
+        # storage.update(user, session_id=_generate_uuid())
+        from api.v1.app import redis_client
 
-    def destroy_session(self, user: User) -> None:
+        session_id = _generate_uuid()
+        redis_client.set(
+            f"auth_{session_id}", user.id,
+            TIME_EXPIRATION[getenv("SESSION_EXP", "day")]
+        )
+        return session_id
+
+    def destroy_session(self) -> None:
         """destroy session based on user id"""
-        storage.update(user, session_id=None)
+        # storage.update(user, session_id=None)
+        from flask import request
+        from api.v1.app import redis_client
+
+        session_id = self.session_cookie(request)
+        redis_client.delete(f"auth_{session_id}")
