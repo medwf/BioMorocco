@@ -12,7 +12,10 @@ def yourCategories(category_id=None):
     if category_id:
         category = storage.get(Category, category_id)
         if category:
-            return jsonify({"category": category.to_dict()}), 200
+            return jsonify({
+                "category": category.to_dict(),
+                "products": [prd.to_dict() for prd in category.products]
+            }), 200
         else:
             return jsonify({"error": "Not Found!"}), 400
     categories = storage.all(Category).values()

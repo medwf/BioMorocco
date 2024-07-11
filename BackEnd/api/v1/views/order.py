@@ -3,7 +3,6 @@ from api.v1.views import app_views
 from models import storage
 from models.product import Product
 from models.order import Order
-from bcrypt import checkpw
 
 
 @app_views.route("/product/<int:product_id>/orders", methods=['GET'], strict_slashes=False)
@@ -55,9 +54,10 @@ def createOrders(product_id=None):
         if product and product.stock and (product.stock - quantity) > 0:
 
             order = Order(
-                status="padding",
+                status="pending",
                 quantity=quantity,
-                total_price=product.price if request.user.country == 'Morocco' else product.price + 100,
+                total_price=(product.price * quantity) if request.user.country ==
+                'Morocco' else (product.price * quantity) + 100,
                 orderValid=0,
                 user_id=request.user.id,
                 product_id=product.id

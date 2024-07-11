@@ -9,7 +9,10 @@ def yourStore():
     """get store data"""
     store = request.user.store
     if store:
-        return jsonify({"store": store.to_dict()}), 200
+        return jsonify({
+            "store": store.to_dict(),
+            "categories": [ctg.to_dict() for ctg in store.categories]
+        }), 200
     return jsonify({"error": "not store found create one!"}), 400
 
 
