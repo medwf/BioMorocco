@@ -3,7 +3,7 @@
 
 from models.base import BaseModel, Base
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey, Boolean
+    Column, String, TEXT
 )
 from sqlalchemy.orm import relationship
 from bcrypt import hashpw, gensalt, checkpw
@@ -23,7 +23,7 @@ class User(BaseModel, Base):
     country = Column(String(30), nullable=True)
     state = Column(String(30), nullable=True)
     city = Column(String(30), nullable=True)
-    address = Column(String(255), nullable=True)
+    address = Column(TEXT, nullable=True)
 
     # relationship
     reviews = relationship(

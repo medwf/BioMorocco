@@ -11,7 +11,7 @@ class Order(BaseModel, Base):
     __tablename__ = "orders"
 
     # data order
-    status = Column(String(40), default="pending")
+    status = Column(String(40), default="Pending")
     quantity = Column(Integer, nullable=False, default=1)
     total_price = Column(Integer, nullable=True)
     orderValid = Column(Integer, default=0, nullable=False)

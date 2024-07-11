@@ -2,7 +2,7 @@
 """Store model"""
 from models.base import Base, BaseModel
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey, Boolean
+    Column, String, Integer, ForeignKey, TEXT
 )
 from sqlalchemy.orm import relationship
 
@@ -13,7 +13,7 @@ class Store(BaseModel, Base):
 
     # data
     name = Column(String(50), nullable=False, unique=False)
-    description = Column(String(255), nullable=False)
+    description = Column(TEXT, nullable=False)
     image = Column(String(255), nullable=True)
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)

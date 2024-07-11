@@ -34,13 +34,13 @@ def reset_password():
         new_password = data.get('new_password', None)
         confirmed = data.get('confirmed', None)
         if password and confirmed and new_password:
-            if new_password == confirmed:
-                if checkpw(password.encode(), request.user.password.encode()):
+            if checkpw(password.encode(), request.user.password.encode()):
+                if new_password == confirmed:
                     request.user.password = new_password
                     request.user.save()
                     return jsonify({'message': 'password changed'}), 200
-                return jsonify({'error': 'password not correct'}), 400
-            return jsonify({'error': 'new_password be same as confirmed'}), 400
+                return jsonify({'error': 'new_password be same as confirmed'}), 400
+            return jsonify({'error': 'password not correct'}), 400
         return jsonify({'error': 'should have password and confirmed and new one'}), 400
     return jsonify({'error': 'check your data send'}), 400
 
