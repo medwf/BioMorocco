@@ -50,8 +50,9 @@ This project is the backend for my portfolio website. It is built using Flask, a
    pip install -r requirements.txt
    ```
 
-4. **Set up the MySQL database:**
+4. **Set up the MySQL database and redis**
 
+   - Install redis on your machine
    - Install MySQL on your machine.
    - look at `BioMorocco/BackEnd/mysql/mysql-startup.sql` file
    - to setup Mysql just run in root directory of BackEnd
@@ -62,26 +63,41 @@ This project is the backend for my portfolio website. It is built using Flask, a
 
 5. **environment variables:**
 
-   store it in run file
+   - Steps to Use `python-dotenv`
 
-   ```Bash
-   # just run console to test models.
-   ./run <api or console>
-   ```
+   1. **Create a `.env` file in the root directory of your project:**
 
-6. **Run Mysql database:**
+      ```env
+      API_HOST=localhost
+      API_PORT=5000
+      # add all env
+      ```
+
+   2. **Load environment variables in your Python script:**
+
+      ```python
+      from dotenv import load_dotenv
+      import os
+
+      load_dotenv()
+      # using os.getenv("name of env that you want")
+      ```
+
+6. **Run Mysql database and redis:**
 
    ```bash
    # check status by
    sudo service mysql status # if not running
+   sudo service redis status # if not running
    # do
    sudo service mysql start/restart
+   sudo service redis start/restart
    ```
 
 7. **Run the application:**
 
    ```bash
-   ./run api
+   ./run
    ```
 
    The application should now be running on `http://127.0.0.1:5000`.
@@ -166,6 +182,15 @@ To access to `PATHs`, authentication is required.
 - PUT `/api/v1/reviews/<id>`: update reviews data.
 - POST `/products/<int:product_id>/reviews`: add new reviews.
 - DELETE `/api/v1/reviews/<id>`: delete reviews.
+
+**Orders :**
+
+To access to `PATHs`, authentication is required.
+
+- GET `/product/<int:product_id>/orders`: get orders by product_id.
+- GET `/users/orders`: get order by user_id.
+- POST `/product/<int:product_id>/orders`: add new order.
+- POST `/users/orders`: add new order.
 
 ## License
 

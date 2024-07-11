@@ -15,7 +15,11 @@
       "description": "Operations related to users"
     },
     {
-      "name": "Category",
+      "name": "CartItem",
+      "description": "Operations related to items in the shopping cart"
+    },
+    {
+      "name": "Store",
       "description": "Operations related to stores"
     },
     {
@@ -27,16 +31,12 @@
       "description": "Operations related to products"
     },
     {
-      "name": "Review",
-      "description": "Operations related to product reviews"
-    },
-    {
       "name": "Order",
       "description": "Operations related to orders"
     },
     {
-      "name": "CartItem",
-      "description": "Operations related to items in the shopping cart"
+      "name": "Review",
+      "description": "Operations related to product reviews"
     }
   ],
   "paths": {
@@ -313,12 +313,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "password": { "type": "string", "example": "new_password" },
-                  "confirmed": { "type": "string", "example": "new_password" },
+                  "password": { "type": "string", "example": "old password" },
                   "new_password": {
                     "type": "string",
                     "example": "new_password"
-                  }
+                  },
+                  "confirmed": { "type": "string", "example": "old password" }
                 },
                 "required": ["password", "confirmed"]
               }
@@ -351,7 +351,7 @@
                   "properties": {
                     "error": {
                       "type": "string",
-                      "example": "Session ID is required"
+                      "example": "Not store found create one!"
                     }
                   }
                 }
@@ -421,7 +421,7 @@
                   "properties": {
                     "error": {
                       "type": "string",
-                      "example": "Session ID is required"
+                      "example": "Not store found create one!"
                     }
                   }
                 }
@@ -482,7 +482,7 @@
                   "properties": {
                     "error": {
                       "type": "string",
-                      "example": "Session ID is required"
+                      "example": "Not store found create one!"
                     }
                   }
                 }
@@ -1092,32 +1092,22 @@
       "get": {
         "tags": ["Product"],
         "summary": "Get Product data",
-        "parameters": [
-          {
-            "name": "session_id",
-            "in": "cookie",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Store data retrieved successfully",
+            "description": "Product data retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "store": {
+                    "Product": {
                       "type": "object",
                       "properties": {
                         "id": { "type": "integer", "example": 1 },
-                        "name": { "type": "string", "example": "Store Name" },
+                        "name": { "type": "string", "example": "Product Name" },
                         "description": {
                           "type": "string",
-                          "example": "Store Description"
+                          "example": "Product Description"
                         },
                         "image": {
                           "type": "string",
@@ -1169,16 +1159,35 @@
                 "type": "object",
                 "properties": {
                   "name": { "type": "string", "example": "New Product Name" },
+                  "stock": {
+                    "type": "integer",
+                    "example": 100
+                  },
+                  "price": {
+                    "type": "integer",
+                    "example": 10
+                  },
+                  "location": {
+                    "type": "string",
+                    "example": "New Product location"
+                  },
                   "description": {
                     "type": "string",
                     "example": "New Product Description"
                   },
-                  "image": {
+                  "images": {
                     "type": "string",
                     "example": "https://example.com/new_image.png"
                   }
                 },
-                "required": ["name", "description", "image"]
+                "required": [
+                  "name",
+                  "description",
+                  "images",
+                  "location",
+                  "price",
+                  "stock"
+                ]
               }
             }
           }
@@ -1219,23 +1228,23 @@
         }
       }
     },
-    "/api/v1/products/id": {
+    "/api/v1/products/{product_id}": {
       "get": {
         "tags": ["Product"],
         "summary": "Get Product data",
         "parameters": [
           {
-            "name": "session_id",
-            "in": "cookie",
+            "name": "product_id",
+            "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Store data retrieved successfully",
+            "description": "Product data retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -1290,6 +1299,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
         "requestBody": {
@@ -1299,20 +1316,36 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
+                  "name": { "type": "string", "example": "New Product Name" },
+                  "stock": {
+                    "type": "integer",
+                    "example": 100
+                  },
+                  "price": {
+                    "type": "integer",
+                    "example": 10
+                  },
+                  "location": {
                     "type": "string",
-                    "example": "Updated Product Name"
+                    "example": "New Product location"
                   },
                   "description": {
                     "type": "string",
-                    "example": "Updated Product Description"
+                    "example": "New Product Description"
                   },
-                  "image": {
+                  "images": {
                     "type": "string",
-                    "example": "https://example.com/updated_image.png"
+                    "example": "https://example.com/new_image.png"
                   }
                 },
-                "required": ["name", "description", "image"]
+                "required": [
+                  "name",
+                  "description",
+                  "images",
+                  "location",
+                  "price",
+                  "stock"
+                ]
               }
             }
           }
@@ -1363,6 +1396,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
         "requestBody": {
@@ -1411,6 +1452,687 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/cartItems": {
+      "get": {
+        "tags": ["CartItem"],
+        "summary": "Get all cart items",
+        "description": "Retrieve all items in the user's cart. Requires `session_id` cookie.",
+        "parameters": [
+          {
+            "in": "cookie",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Session ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved cart items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "integer" },
+                      "product_id": { "type": "integer" },
+                      "quantity": { "type": "integer" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Session ID missing or invalid"
+          }
+        }
+      }
+    },
+    "/api/v1/products/{product_id}/cartItems": {
+      "put": {
+        "tags": ["CartItem"],
+        "summary": "Update a cart item",
+        "description": "Update the quantity of a cart item. Requires `session_id` cookie.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Product ID"
+          },
+          {
+            "in": "cookie",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Session ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantity": { "type": "integer" }
+                },
+                "required": ["quantity"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated cart item",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer" },
+                    "product_id": { "type": "integer" },
+                    "quantity": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Session ID missing or invalid"
+          },
+          "404": {
+            "description": "Not Found - Product not found"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a product to cart",
+        "tags": ["CartItem"],
+        "description": "Add a product to the user's cart. Requires `session_id` cookie.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Product ID"
+          },
+          {
+            "in": "cookie",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Session ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantity": { "type": "integer" }
+                },
+                "required": ["quantity"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully added product to cart",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer" },
+                    "product_id": { "type": "integer" },
+                    "quantity": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Session ID missing or invalid"
+          },
+          "404": {
+            "description": "Not Found - Product not found"
+          }
+        }
+      }
+    },
+    "/api/v1/cartItems/{cartItem_id}": {
+      "delete": {
+        "tags": ["CartItem"],
+        "summary": "Delete a cart item",
+        "description": "Remove a cart item. Requires `session_id` cookie.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cartItem_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Cart Item ID"
+          },
+          {
+            "in": "cookie",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Session ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted cart item"
+          },
+          "401": {
+            "description": "Unauthorized - Session ID missing or invalid"
+          },
+          "404": {
+            "description": "Not Found - Cart item not found"
+          }
+        }
+      }
+    },
+    "/api/v1/users/orders": {
+      "get": {
+        "tags": ["Order"],
+        "summary": "Get User Orders",
+        "description": "Retrieve a list of orders for the authenticated user.",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of user orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "int",
+                        "example": 1
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "example": "time"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "example": "time"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "padding"
+                      },
+                      "quantity": {
+                        "type": "string",
+                        "example": 100
+                      },
+                      "total_price": {
+                        "type": "string",
+                        "example": 100
+                      },
+                      "orderValid": {
+                        "type": "string",
+                        "example": 0
+                      },
+                      "user_id": {
+                        "type": "string",
+                        "example": 1
+                      },
+                      "product_id": {
+                        "type": "string",
+                        "example": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Order"],
+        "summary": "Create User Order",
+        "description": "Create a new order for the authenticated user.",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "product_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [1, 2]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Order created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Order created successfully"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/product/{product_id}/orders": {
+      "get": {
+        "tags": ["Order"],
+        "summary": "Get Product Orders",
+        "description": "Retrieve a list of orders for a specific product.",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of product orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "int",
+                        "example": 1
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "example": "time"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "example": "time"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "padding"
+                      },
+                      "quantity": {
+                        "type": "string",
+                        "example": 100
+                      },
+                      "total_price": {
+                        "type": "string",
+                        "example": 100
+                      },
+                      "orderValid": {
+                        "type": "string",
+                        "example": 0
+                      },
+                      "user_id": {
+                        "type": "string",
+                        "example": 1
+                      },
+                      "product_id": {
+                        "type": "string",
+                        "example": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Order"],
+        "summary": "Create Product Order",
+        "description": "Create a new order for a specific product.",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantity": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Order created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "int",
+                        "example": 1
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "example": "time"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "example": "time"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "padding"
+                      },
+                      "quantity": {
+                        "type": "integer",
+                        "example": 100
+                      },
+                      "total_price": {
+                        "type": "integer",
+                        "example": 100
+                      },
+                      "orderValid": {
+                        "type": "integer",
+                        "example": 0
+                      },
+                      "user_id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "product_id": {
+                        "type": "integer",
+                        "example": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/products/{product_id}/reviews/{review_id}": {
+      "get": {
+        "tags": ["Review"],
+        "summary": "Get a specific review for a product",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the product",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "review_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the review",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product or review not found"
+          }
+        }
+      }
+    },
+    "/products/{product_id}/reviews": {
+      "get": {
+        "tags": ["Review"],
+        "summary": "Get all reviews for a product",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the product",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {}
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/reviews/{review_id}": {
+      "post": {
+        "summary": "Create a new review for a product (requires session_id in cookies)",
+        "tags": ["Review"],
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "review_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the review",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["rating", "comment"],
+                "properties": {
+                  "rating": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5
+                  },
+                  "comment": {
+                    "type": "string"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Review created successfully"
+          },
+          "400": {
+            "description": "Invalid request body (missing required fields, invalid rating value, etc.)"
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid session_id)"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Review"],
+        "summary": "Delete a specific review",
+        "parameters": [
+          {
+            "name": "review_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the review",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "description": "The ID of the review",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Review deleted successfully (no content returned)"
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid credentials)"
+          },
+          "403": {
+            "description": "Forbidden (user not authorized to delete"
           }
         }
       }

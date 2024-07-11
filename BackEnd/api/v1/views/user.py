@@ -19,10 +19,10 @@ def UpdateUser():
     from models import storage
     data = request.get_json(force=True, silent=True)
     if not data:
-        return jsonify({'message': 'check your data send'})
+        return jsonify({'message': 'check your data send'}), 400
 
     storage.update(request.user, **data)
-    return jsonify({'message': 'Your Information updated!'})
+    return jsonify({'message': 'Your Information updated!'}), 200
 
 
 @app_views.route('/reset_password', methods=['PUT'], strict_slashes=False)
@@ -31,18 +31,18 @@ def reset_password():
     data = request.get_json(force=True, silent=True)
     if data:
         password = data.get('password', None)
-        confirmed_password = data.get('confirmed', None)
         new_password = data.get('new_password', None)
-        if password and confirmed_password and new_password:
-            if password == confirmed_password:
+        confirmed = data.get('confirmed', None)
+        if password and confirmed and new_password:
+            if new_password == confirmed:
                 if checkpw(password.encode(), request.user.password.encode()):
                     request.user.password = new_password
                     request.user.save()
-                    return jsonify({'message': 'password changed'})
-                return jsonify({'message': 'password not correct'})
-            return jsonify({'message': 'password be same as confirmed'})
-        return jsonify({'message': 'should have password and confirmed and new one'})
-    return jsonify({'message': 'check your data send'})
+                    return jsonify({'message': 'password changed'}), 200
+                return jsonify({'error': 'password not correct'}), 400
+            return jsonify({'error': 'new_password be same as confirmed'}), 400
+        return jsonify({'error': 'should have password and confirmed and new one'}), 400
+    return jsonify({'error': 'check your data send'}), 400
 
 
 @app_views.route('/users', methods=['DELETE'], strict_slashes=False)

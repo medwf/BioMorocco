@@ -24,9 +24,6 @@ class User(BaseModel, Base):
     state = Column(String(30), nullable=True)
     city = Column(String(30), nullable=True)
     address = Column(String(255), nullable=True)
-    userValidEmail = Column(Integer, default=0, nullable=True)
-    session_id = Column(String(250), nullable=True)
-    reset_token = Column(String(250), nullable=True)
 
     # relationship
     reviews = relationship(
