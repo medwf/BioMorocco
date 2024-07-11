@@ -2,7 +2,7 @@
 """review model"""
 from models.base import Base, BaseModel
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey, TEXT
+    Column, Integer, ForeignKey, TEXT
 )
 
 
@@ -11,7 +11,7 @@ class Review(BaseModel, Base):
     __tablename__ = "reviews"
 
     rating = Column(Integer, nullable=False)
-    comment = Column(String(255), nullable=True)
+    comment = Column(TEXT, nullable=True)
     images = Column(TEXT, nullable=True)
 
     # foreignkey

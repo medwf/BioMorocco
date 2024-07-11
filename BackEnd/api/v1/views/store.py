@@ -18,7 +18,7 @@ def updateStore():
     """update store data"""
     data = request.get_json(force=True, silent=True)
     if not data:
-        return jsonify({"error": "check your data send!"})
+        return jsonify({"error": "check your data send!"}), 400
 
     store = request.user.store
     if store:

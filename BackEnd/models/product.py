@@ -12,7 +12,7 @@ class Product(BaseModel, Base):
     __tablename__ = "products"
 
     name = Column(String(45), nullable=False, unique=True)
-    description = Column(String(255), nullable=True)
+    description = Column(TEXT, nullable=True)
     price = Column(Integer, nullable=False)
     stock = Column(Integer, nullable=False)
     images = Column(TEXT, nullable=False)

@@ -2,7 +2,7 @@
 """product model"""
 from models.base import Base, BaseModel
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey
+    Column, String, Integer, ForeignKey, TEXT
 )
 from sqlalchemy.orm import relationship
 
@@ -13,7 +13,7 @@ class Category(BaseModel, Base):
 
     # data
     name = Column(String(45), nullable=False, unique=True)
-    description = Column(String(255), nullable=True)
+    description = Column(TEXT, nullable=True)
     image = Column(String(255), nullable=True)
     store_id = Column(Integer, ForeignKey('stores.id'), nullable=False)
 
