@@ -48,5 +48,5 @@ def logout():
     """delete session"""
     from api.v1.app import AUTH
 
-    AUTH.destroy_session(request.user)
+    AUTH.destroy_session()
     return jsonify({'message': 'Logout successful'})

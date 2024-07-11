@@ -2,13 +2,14 @@
 """
 Main module For The Flask Web Application
 """
-# from models import storage
-from api.v1.auth.session_db_auth import SessionDBAuth
-from api.v1.views import app_views
-from flask import Flask, jsonify, request, abort, send_from_directory
-from flask_cors import CORS
-from flask_swagger_ui import get_swaggerui_blueprint
 from os import getenv, getcwd
+from flask_swagger_ui import get_swaggerui_blueprint
+from flask_cors import CORS
+from flask import Flask, jsonify, request, abort, send_from_directory
+from api.v1.views import app_views
+from api.v1.auth.session_db_auth import SessionDBAuth
+from api.v1.auth.db_redis import RedisClient
+
 
 SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
 API_URL = '/static/swagger.json'
@@ -20,6 +21,8 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}},
      supports_credentials=True)
 
 AUTH = SessionDBAuth()
+redis_client = RedisClient()
+
 
 # Call factory function to create our blueprint
 swaggerui_blueprint = get_swaggerui_blueprint(
@@ -45,14 +48,14 @@ app.register_blueprint(swaggerui_blueprint)
 @app.before_request
 def beforeRequest() -> str:
     """handle auth before request"""
-    print(request.path, "***")
+    print(request.path)
     # print(request.method)
     if AUTH.require_auth(request.method, request.path, [
             '/api/v1/',
             '/api/v1/stat*',
             '/api/v1/signUp/',
             '/api/v1/login/',
-            '/api/docs/*',
+            '/api/docs*',
             '/static/*'
     ]):
         if AUTH.session_cookie(request) is None:
