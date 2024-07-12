@@ -9,6 +9,7 @@ from flask import Flask, jsonify, request, abort, send_from_directory
 from api.v1.views import app_views
 from api.v1.auth.session_db_auth import SessionDBAuth
 from api.v1.auth.db_redis import RedisClient
+from api.v1.auth.sendEmail import SendEmail
 
 
 SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
@@ -20,6 +21,7 @@ app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}},
      supports_credentials=True)
 
+Email = SendEmail()
 AUTH = SessionDBAuth()
 redis_client = RedisClient()
 
@@ -55,6 +57,7 @@ def beforeRequest() -> str:
             '/api/v1/stat*',
             '/api/v1/signUp/',
             '/api/v1/login/',
+            '/api/v1/forget_password/',
             '/api/docs*',
             '/static/*'
     ]):

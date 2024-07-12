@@ -176,6 +176,114 @@
         }
       }
     },
+    "/api/v1/forget_password": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Request to change user password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Code Generate successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Code generate successful, Check your email."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or user Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "User not Found!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Authentication"],
+        "summary": "Request To change user password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": { "type": "integer", "format": 100000 },
+                  "new_password": { "type": "string", "format": "password" },
+                  "confirmed": { "type": "string", "format": "password" }
+                },
+                "required": ["email", "new_password", "confirmed"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password changed successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or user Not Found or code Expire",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "User not Found or code Expired!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/logout": {
       "delete": {
         "tags": ["Authentication"],
@@ -226,6 +334,7 @@
         }
       }
     },
+
     "/api/v1/profile": {
       "get": {
         "tags": ["User"],
@@ -492,6 +601,7 @@
         }
       }
     },
+
     "/api/v1/store": {
       "get": {
         "tags": ["Store"],
@@ -1088,6 +1198,7 @@
         }
       }
     },
+
     "/api/v1/products": {
       "get": {
         "tags": ["Product"],
@@ -1119,17 +1230,46 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Session ID missing or invalid",
+          }
+        }
+      }
+    },
+    "/api/v1/categories/{category_id}/products": {
+      "get": {
+        "tags": ["Product"],
+        "summary": "GET Product data by category",
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product data retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Session ID is required"
+                    "store": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "example": 1 },
+                        "name": { "type": "string", "example": "product Name" },
+                        "description": {
+                          "type": "string",
+                          "example": "product Description"
+                        },
+                        "image": {
+                          "type": "string",
+                          "example": "https://example.com/image.png"
+                        }
+                      }
                     }
                   }
                 }
@@ -1140,7 +1280,7 @@
       },
       "post": {
         "tags": ["Product"],
-        "summary": "Create new Product",
+        "summary": "Create Product data",
         "parameters": [
           {
             "name": "session_id",
@@ -1148,6 +1288,14 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
             }
           }
         ],
@@ -1193,8 +1341,8 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Product created successfully",
+          "200": {
+            "description": "Product data updated successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -1202,7 +1350,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "Product created successfully"
+                      "example": "Product data updated successfully"
                     }
                   }
                 }
@@ -1254,32 +1402,16 @@
                       "type": "object",
                       "properties": {
                         "id": { "type": "integer", "example": 1 },
-                        "name": { "type": "string", "example": "Store Name" },
+                        "name": { "type": "string", "example": "product Name" },
                         "description": {
                           "type": "string",
-                          "example": "Store Description"
+                          "example": "product Description"
                         },
                         "image": {
                           "type": "string",
                           "example": "https://example.com/image.png"
                         }
                       }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Session ID missing or invalid",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Session ID is required"
                     }
                   }
                 }
@@ -1456,6 +1588,7 @@
         }
       }
     },
+
     "/api/v1/cartItems": {
       "get": {
         "tags": ["CartItem"],
@@ -1661,6 +1794,7 @@
         }
       }
     },
+
     "/api/v1/users/orders": {
       "get": {
         "tags": ["Order"],
