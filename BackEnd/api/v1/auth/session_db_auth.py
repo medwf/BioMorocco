@@ -14,7 +14,8 @@ TIME_EXPIRATION = {
     'min': 60,
     'hr': 60 * 60,
     "day": 60 * 60 * 24,
-    "week": 60 * 60 * 24 * 7
+    "week": 60 * 60 * 24 * 7,
+    "month": 60 * 60 * 24 * 7 * 4
 }
 
 
@@ -69,13 +70,6 @@ class SessionDBAuth():
         user = storage.get(User, user_id)
         return user if user else None
 
-    # def get_user_from_session_id(self, session_id: str) -> User:
-    #     """get user based on session id"""
-    #     if session_id:
-    #         user = storage.find_user_by(session_id=session_id)
-    #         return user if user else None
-    #     return None
-
     def register_user(self, data: Dict) -> User:
         """register user based on email and password"""
         from models.cart import Cart
@@ -107,6 +101,30 @@ class SessionDBAuth():
             TIME_EXPIRATION[getenv("SESSION_EXP", "day")]
         )
         return session_id
+
+    @staticmethod
+    def create_code_for_reset_password(user_id, expire, multi):
+        """create code by define expiration 2m"""
+        from random import randint
+        from api.v1.app import redis_client
+
+        code = randint(100000, 999999)
+        redis_client.set(
+            f"code_{code}", user_id,
+            TIME_EXPIRATION[expire] * multi
+        )
+        return code
+
+    @staticmethod
+    def check_code_for_reset_password(code):
+        """check user_id based on code"""
+        from api.v1.app import redis_client
+
+        user_id = redis_client.get(f"code_{code}")
+        if user_id:
+            redis_client.delete(f"code_{code}")
+        user = storage.get(User, user_id)
+        return user if user else None
 
     def destroy_session(self) -> None:
         """destroy session based on user id"""

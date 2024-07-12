@@ -1,11 +1,11 @@
-from flask import jsonify, make_response, request, abort, redirect
+from flask import jsonify, request
 from api.v1.views import app_views
 
 
 @app_views.route('/signUp', methods=['POST'], strict_slashes=False)
 def users():
     """create a user with post methods"""
-    from api.v1.app import AUTH
+    from api.v1.app import AUTH, Email
 
     data = request.get_json(force=True, silent=True)
     if data:
@@ -13,7 +13,13 @@ def users():
         password = data.get('password', None)
 
         if email and password:
-            if AUTH.register_user(data):
+            user = AUTH.register_user(data)
+            if user:
+                content = Email.signUp(
+                    f'{user.first_name} {user.last_name}',
+                    email
+                )
+                Email.sendEmail(email, content)
                 return jsonify({'email': email, 'message': 'user created'}), 201
             return jsonify({'message': 'Email already registered'}), 400
         return jsonify({'message': 'should have email and password'}), 400
@@ -40,6 +46,48 @@ def session():
                     response.set_cookie('session_id', session_id)
                     return response
         return jsonify({'error': 'Invalid email or password'}), 400
+    return jsonify({'error': 'check your data send'}), 400
+
+
+@app_views.route('/forget_password', methods=['POST'], strict_slashes=False)
+def get_forget_password():
+    """Reset password"""
+    from api.v1.app import AUTH, Email
+    from models import storage
+
+    data = request.get_json(force=True, silent=True)
+    if data and 'email' in data:
+        user = storage.find_user_by(email=data['email'])
+        if user:
+            code = AUTH.create_code_for_reset_password(user.id, 'min', 2)
+            content = Email.create_content_for_forget_Password(
+                f"{user.first_name} {user.last_name}", user.email, code
+            )
+            Email.sendEmail(user.email, content)
+            return jsonify({'message': 'Code Created Successfully, You have 2m to change password Check your Email'}), 200
+        return jsonify({'error': 'No user Found'}), 404
+    return jsonify({'error': 'check your data send'}), 400
+
+
+@app_views.route('/forget_password', methods=['PUT'], strict_slashes=False)
+def put_forget_password():
+    """Reset password"""
+    from api.v1.app import AUTH
+    data = request.get_json(force=True, silent=True)
+    if data:
+        code = data.get('code', None)
+        new_password = data.get('new_password', None)
+        confirmed = data.get('confirmed', None)
+        if code and confirmed and new_password:
+            user = AUTH.check_code_for_reset_password(code)
+            if not user:
+                return jsonify({'error': 'You code was Expired or not correct!'}), 400
+            if new_password == confirmed:
+                user.password = new_password
+                user.save()
+                return jsonify({'message': 'password changed'}), 200
+            return jsonify({'error': 'new_password be same as confirmed'}), 400
+        return jsonify({'error': 'should have code and password and confirmed and new one'}), 400
     return jsonify({'error': 'check your data send'}), 400
 
 
