@@ -8,12 +8,12 @@ This project is the backend for my portfolio website. It is built using Flask, a
 
 ## Features
 
-- RESTful API endpoints for managing portfolio data
-- User authentication and authorization
-- Sending emails for user notifications (sign-up and password recovery)
-- CRUD operations for projects and other portfolio elements
-- Integration with MySQL for persistent data storage
-- Redis integration for storing session IDs and password recovery codes with Expiration.
+- `RESTful API` endpoints for managing portfolio data
+- User `authentication` and `authorization`
+- `Sending emails` for user notifications (sign-up and password recovery, and new Orders and Low stock dedicated)
+- `CRUD operations` for projects and other portfolio elements
+- Integration with `MySQL` for persistent data storage
+- `Redis` integration for storing session IDs and password recovery codes with Expiration.
 
 ## Technologies Used
 
@@ -199,8 +199,8 @@ The API endpoint Swagger documentation is available at [http://localhost:5000/ap
 - **Authenticated:**
   - GET `/product/<int:product_id>/orders`: Retrieve orders by product ID.
   - GET `/users/orders`: Retrieve orders by user ID.
-  - POST `/product/<int:product_id>/orders`: Add a new order.
-  - POST `/users/orders`: Add a new order.
+  - POST `/product/<int:product_id>/orders`: Add a new order. add sending Email: (New Orders `all details need` and Low stock dedicated)
+  - POST `/users/orders`: Add a new order. add sending Email: (New Orders `all details need` and Low stock dedicated)
 
 ## License
 
