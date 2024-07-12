@@ -100,8 +100,75 @@ class SendEmail:
         message.attach(html_part)
         return message
 
-    # @staticmethod
-    # def order():
-    #     """create content Welcoming an user signUp"""
-    #     return """
-    #         """
+    @staticmethod
+    def create_content_for_new_order(owner, products, customer):
+        """create content Welcoming an user signUp"""
+        html_ordered_products = "<table border='1'><tr><th>Product</th><th>Quantity</th><th>Price</th></tr>"
+        total = 0
+        for product, quantity, total_price in products:
+            html_ordered_products += f"<tr><td>{product.name}</td><td>{quantity}</td><td>{total_price} $</td></tr>"
+            total += total_price
+        html_ordered_products += "</table>"
+
+        html = f"""
+<html>
+<head></head>
+<body>
+    <p>Dear <b>{owner.first_name} {owner.last_name}</b>,</p>
+    <p>You have received a new order from a customer. Here are the details:</p>
+    <ul>
+        <li><p><b>Customer Name:</b> {customer.first_name} {customer.last_name}</p></li>
+        <li><p><b>Phone Number:</b> {customer.phone}</p></li>
+        <li><p><b>Email:</b> <a href="mailto:{customer.email}">{customer.email}</a></p></li>
+        <li><p><b>Country:</b> {customer.country}</p></li>
+        <li><p><b>State:</b> {customer.state}</p></li>
+        <li><p><b>City:</b> {customer.city}</p></li>
+        <li><p><b>Address:</b> {customer.address}</p></li>
+    </ul>
+    <p><b>Order Details:</b></p>
+    {html_ordered_products}
+    <p><b>total price:</b> {total} $.</p>
+    <p>Please process this order as soon as possible to ensure timely delivery to the customer.</p>
+    <p>If you need any assistance, feel free to reach out to us at <a href="mailto:support@biomorocco.com">support@biomorocco.com</a>.</p>
+    <p>Best Regards,</p>
+    <p>The BioMorocco Team</p>
+</body>
+</html>
+"""
+        message = MIMEMultipart("alternative")
+        message["Subject"] = "New Order Received"
+        message["From"] = EMAIL
+        message["To"] = owner.email
+
+        # Attach the HTML content to the email
+        html_part_new_order = MIMEText(html, "html")
+        message.attach(html_part_new_order)
+        return message
+
+    @staticmethod
+    def create_content_for_low_stock_dedicated(owner, product):
+        """create content Welcoming an user signUp"""
+        html = f"""
+<html>
+<head></head>
+<body>
+    <p>Dear <b>{owner.first_name} {owner.last_name}</b>,</p>
+    <p>We wanted to inform you that the stock level for the following product is running low:</p>
+    <p><b>Product:</b> {product.name}</p>
+    <p><b>Current Stock:</b> {product.stock} units</p>
+    <p>Please check your inventory and restock this product to ensure continuous availability for your customers.</p>
+    <p>If you need any assistance, feel free to reach out to us at <a href="mailto:support@biomorocco.com">support@biomorocco.com</a>.</p>
+    <p>Best Regards,</p>
+    <p>The BioMorocco Team</p>
+</body>
+</html>
+"""
+        message = MIMEMultipart("alternative")
+        message["Subject"] = "Low Stock Alert: Action Required"
+        message["From"] = EMAIL
+        message["To"] = owner.email
+
+        # Attach the HTML content to the email
+        html_part_new_order = MIMEText(html, "html")
+        message.attach(html_part_new_order)
+        return message

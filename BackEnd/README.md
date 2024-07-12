@@ -8,10 +8,12 @@ This project is the backend for my portfolio website. It is built using Flask, a
 
 ## Features
 
-- RESTful API endpoints for managing portfolio data
-- User authentication and authorization
-- CRUD operations for projects and other portfolio elements
-- Integration with MySQL for persistent data storage
+- `RESTful API` endpoints for managing portfolio data
+- User `authentication` and `authorization`
+- `Sending emails` for user notifications (sign-up and password recovery, and new Orders and Low stock dedicated)
+- `CRUD operations` for projects and other portfolio elements
+- Integration with `MySQL` for persistent data storage
+- `Redis` integration for storing session IDs and password recovery codes with Expiration.
 
 ## Technologies Used
 
@@ -19,6 +21,8 @@ This project is the backend for my portfolio website. It is built using Flask, a
 - **MySQL**: Relational database management system
 - **SQLAlchemy**: ORM for database interactions
 - **Flask-RESTful**: Extension for building REST APIs with Flask
+- **Redis**: In-memory data structure store for session management
+- **smtplib**: Python library for sending email.
 
 ## Setup and Installation
 
@@ -26,6 +30,7 @@ This project is the backend for my portfolio website. It is built using Flask, a
 
 - Python 3.x
 - MySQL
+- Redis
 - pip (Python package installer)
 
 ### Steps
@@ -50,46 +55,44 @@ This project is the backend for my portfolio website. It is built using Flask, a
    pip install -r requirements.txt
    ```
 
-4. **Set up the MySQL database and redis**
+4. **Set up the MySQL database and Redis:**
 
-   - Install redis on your machine
+   - Install Redis on your machine.
    - Install MySQL on your machine.
-   - look at `BioMorocco/BackEnd/mysql/mysql-startup.sql` file
-   - to setup Mysql just run in root directory of BackEnd
+   - Refer to `BioMorocco/BackEnd/mysql/mysql-startup.sql` file.
+   - To set up MySQL, run the following in the root directory of BackEnd:
 
    ```bash
    cat BackEnd/mysql/mysql-startup.sql | sudo mysql -u root
    ```
 
-5. **environment variables:**
+5. **Set up environment variables:**
 
-   - Steps to Use `python-dotenv`
+   - Create a `.env` file in the root directory of your project:
 
-   1. **Create a `.env` file in the root directory of your project:**
+     ```env
+     API_HOST=localhost
+     API_PORT=5000
+     # add all other necessary environment variables
+     ```
 
-      ```env
-      API_HOST=localhost
-      API_PORT=5000
-      # add all env
-      ```
+   - Load environment variables in your Python script:
 
-   2. **Load environment variables in your Python script:**
+     ```python
+     from dotenv import load_dotenv
+     import os
 
-      ```python
-      from dotenv import load_dotenv
-      import os
+     load_dotenv()
+     # Use os.getenv("name of env that you want")
+     ```
 
-      load_dotenv()
-      # using os.getenv("name of env that you want")
-      ```
-
-6. **Run Mysql database and redis:**
+6. **Run MySQL and Redis:**
 
    ```bash
-   # check status by
+   # Check status:
    sudo service mysql status # if not running
    sudo service redis status # if not running
-   # do
+   # Start or restart services:
    sudo service mysql start/restart
    sudo service redis start/restart
    ```
@@ -102,95 +105,102 @@ This project is the backend for my portfolio website. It is built using Flask, a
 
    The application should now be running on `http://127.0.0.1:5000`.
 
-## The API endpoint swagger documentation.
+## API Endpoints Documentation
 
-[URL for swagger documentation](http://localhost:5000/api/docs)
+The API endpoint Swagger documentation is available at [http://localhost:5000/api/docs](http://localhost:5000/api/docs).
 
 ## API Endpoints
 
-**index :**
+### Public Endpoints
 
-`PATHs` that is accessible to anyone.
+- **Index:**
+  - GET `/`: Welcome to the API.
+  - GET `/status`: API status and information.
+  - GET `/stats`: Count of all tables.
 
-- GET `/`: Say welcome to api.
-- GET `/status`: status of our api and some information.
-- GET `/stats`: count all tables.
-- GET `/categories`: get all categories
-- GET `/products`: get all products
+### Authentication
 
-**User :**
+- **Public:**
 
-`PATHs` that is accessible to anyone.
+  - GET `/api/v1/signUp`: Create a new user.
+  - POST `/api/v1/login`: Log in a user based on email and password. Creates a session.
+  - POST `/api/v1/forget_password`: Generate a code sent via email to recover password (2-minute expiration).
+  - PUT `/api/v1/forget_password`: Set a new password based on the code sent via email.
 
-- GET `/api/v1/signUp`: create new User.
-- POST `/api/v1/login`: log in user based on email and password. create session
+- **Authenticated:**
+  - DELETE `/api/v1/logout`: Log out a user based on session cookies.
 
-To access to `PATHs`, authentication is required.
+### User Management
 
-- GET `/api/v1/profile`: get data user
-- PUT `/api/v1/users`: update user data. password not included
-- DELETE `/api/v1/logout`: log out user based on cookies session
-- DELETE `/api/v1/users`: delete all user account
-- POST `/api/v1/reset_password`: change password based on old one
+- **Authenticated:**
+  - GET `/api/v1/profile`: Retrieve user data.
+  - PUT `/api/v1/users`: Update user data (password not included).
+  - POST `/api/v1/reset_password`: Change password based on the old one.
+  - DELETE `/api/v1/users`: Delete user account.
 
-**Store :**
+### Store Management
 
-To access to `PATHs`, authentication is required.
+- **Public:**
 
-- GET `/api/v1/store`: get store data
-- PUT `/api/v1/store`: update store data.
-- POST `/api/v1/store`: create new store.
-- DELETE `/api/v1/store`: delete store.
+  - GET `/api/v1/store`: Retrieve store data.
 
-**Categories :**
+- **Authenticated:**
+  - PUT `/api/v1/store`: Update store data.
+  - POST `/api/v1/store`: Create a new store.
+  - DELETE `/api/v1/store`: Delete store.
 
-To access to `PATHs`, authentication is required.
+### Categories
 
-- GET `/api/v1/categories`: get categories data
-- GET `/api/v1/categories/<id>`: get category data by id
-- PUT `/api/v1/categories/<id>`: update categories data.
-- POST `/api/v1/categories`: create new categories.
-- DELETE `/api/v1/categories/<id>`: delete categories.
+- **Public:**
 
-**Products :**
+  - GET `/api/v1/categories`: Retrieve categories data.
+  - GET `/api/v1/categories/<id>`: Retrieve category data by ID.
 
-- GET `/api/v1/products`: get products data
-- GET `/api/v1/products/<id>`: get product data by id
+- **Authenticated:**
 
-To access to `PATHs`, authentication is required.
+  - PUT `/api/v1/categories/<id>`: Update category data.
+  - POST `/api/v1/categories`: Create new categories.
+  - DELETE `/api/v1/categories/<id>`: Delete categories.
 
-- PUT `/api/v1/products/<id>`: update products data.
-- POST `/api/v1/categories/<category_id>/products`: create new products.
-- DELETE `/api/v1/products/<id>`: delete products.
+### Products
 
-**cartItems :**
+- **Public:**
 
-To access to `PATHs`, authentication is required.
+  - GET `/api/v1/products`: Retrieve products data.
+  - GET `/api/v1/products/<id>`: Retrieve product data by ID.
 
-- GET `/api/v1/cartItems`: get cartItems data
-- PUT `/api/v1/cartItems/<id>`: update cartItems data.
-- POST `/api/v1/categories/<category_id>/cartItems`: add new cartItems.
-- DELETE `/api/v1/cartItems/<id>`: delete cartItems.
+- **Authenticated:**
+  - PUT `/api/v1/products/<id>`: Update product data.
+  - POST `/api/v1/categories/<category_id>/products`: Create new products.
+  - DELETE `/api/v1/products/<id>`: Delete products.
 
-**reviews :**
+### Cart Items
 
-- GET `/products/<int:product_id>/reviews`: get reviews data
-- GET `/products/<int:product_id>/reviews/<int:review_id>`: get review data by id
+- **Authenticated:**
+  - GET `/api/v1/cartItems`: Retrieve cart items data.
+  - PUT `/api/v1/cartItems/<id>`: Update cart items data.
+  - POST `/api/v1/products/<product_id>/cartItems`: Add new cart items.
+  - DELETE `/api/v1/cartItems/<id>`: Delete cart items.
 
-To access to `PATHs`, authentication is required.
+### Reviews
 
-- PUT `/api/v1/reviews/<id>`: update reviews data.
-- POST `/products/<int:product_id>/reviews`: add new reviews.
-- DELETE `/api/v1/reviews/<id>`: delete reviews.
+- **Public:**
 
-**Orders :**
+  - GET `/products/<int:product_id>/reviews`: Retrieve reviews data.
+  - GET `/products/<int:product_id>/reviews/<int:review_id>`: Retrieve review data by ID.
 
-To access to `PATHs`, authentication is required.
+- **Authenticated:**
+  - PUT `/api/v1/reviews/<id>`: Update reviews data.
+  - POST `/products/<int:product_id>/reviews`: Add new reviews.
+  - DELETE `/api/v1/reviews/<id>`: Delete reviews.
 
-- GET `/product/<int:product_id>/orders`: get orders by product_id.
-- GET `/users/orders`: get order by user_id.
-- POST `/product/<int:product_id>/orders`: add new order.
-- POST `/users/orders`: add new order.
+### Orders
+
+- **Authenticated:**
+  - GET `/product/<int:product_id>/orders`: Retrieve orders by product ID.
+  - GET `/users/orders`: Retrieve orders by user ID.
+  - POST `/product/<int:product_id>/orders`: Add a new order. add sending Email: (New Orders `all details need` and Low stock dedicated)
+  - POST `/users/orders`: Add a new order. add sending Email: (New Orders `all details need` and Low stock dedicated)
 
 ## License
 
@@ -198,4 +208,4 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-For any inquiries or issues, please contact [linkedin](https://www.linkedin.com/in/mohamed-wafi-a65277273/) or [Gmail](med.wf95@gmail.com).
+For any inquiries or issues, please contact [LinkedIn](https://www.linkedin.com/in/mohamed-wafi-a65277273/) or [Gmail](med.wf95@gmail.com).
