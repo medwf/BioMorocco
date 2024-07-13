@@ -19,13 +19,24 @@ def yourStore():
 @app_views.route("/store", methods=['PUT'], strict_slashes=False)
 def updateStore():
     """update store data"""
-    data = request.get_json(force=True, silent=True)
-    if not data:
-        return jsonify({"error": "check your data send!"}), 400
+    from api.v1.utils.image import upload_image
+    import json
+
+    data = request.form.get("data", None)
+    if data:
+        try:
+            data = json.loads(data)
+        except json.JSONDecodeError:
+            data = None
+
+    if not data and 'file' not in request.files:
+        return jsonify({"error": "check your data send!"})
 
     store = request.user.store
     if store:
-        storage.update(store, **data)
+        if data:
+            storage.update(store, **data)
+        upload_image(request, store)
         return jsonify({"message": "Store data updated successfully"}), 200
     return jsonify({"error": "Not store found create one!"}), 400
 
@@ -34,8 +45,17 @@ def updateStore():
 def createStore():
     """get store data"""
     from models.store import Store
-    data = request.get_json(force=True, silent=True)
-    if not data:
+    from api.v1.utils.image import upload_image
+    import json
+
+    data = request.form.get("data", None)
+    if data:
+        try:
+            data = json.loads(data)
+        except json.JSONDecodeError:
+            data = None
+
+    if not data and 'file' not in request.files:
         return jsonify({"error": "check your data send!"})
 
     store = request.user.store
@@ -46,7 +66,9 @@ def createStore():
                 name=data['name'],
                 description=data['description']
             )
-            storage.update(store, **data)
+
+            store.save()
+            upload_image(request, store)
             return jsonify({"message": "Store created successfully"}), 200
         return jsonify({"error": "Name and description is mandatory"}), 400
     return jsonify({"error": "You have One!"}), 400
@@ -55,6 +77,7 @@ def createStore():
 @app_views.route("/store", methods=['DELETE'], strict_slashes=False)
 def deleteStore():
     """delete store"""
+    from api.v1.utils.image import deleted_image
     data = request.get_json(force=True, silent=True)
     if not data:
         return jsonify({"error": "check your data send!"}), 400
@@ -68,6 +91,7 @@ def deleteStore():
                         rev.delete()
                     prd.delete()
                 ctg.delete()
+            deleted_image(store)
             store.delete()
             storage.save()
             return jsonify({"message": "Store deleted successfully"}), 200

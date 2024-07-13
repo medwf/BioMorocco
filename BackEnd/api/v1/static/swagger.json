@@ -708,21 +708,26 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string", "example": "Updated Store Name" },
-                  "description": {
+                  "file": {
                     "type": "string",
-                    "example": "Updated Store Description"
+                    "format": "binary"
                   },
-                  "image": {
-                    "type": "string",
-                    "example": "https://example.com/updated_image.png"
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string", "format": "name" },
+                      "description": {
+                        "type": "string",
+                        "format": "description"
+                      }
+                    },
+                    "required": ["name", "description"]
                   }
-                },
-                "required": ["name", "description", "image"]
+                }
               }
             }
           }
@@ -778,21 +783,26 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string", "example": "New Store Name" },
-                  "description": {
+                  "file": {
                     "type": "string",
-                    "example": "New Store Description"
+                    "format": "binary"
                   },
-                  "image": {
-                    "type": "string",
-                    "example": "https://example.com/new_image.png"
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string", "format": "name" },
+                      "description": {
+                        "type": "string",
+                        "format": "description"
+                      }
+                    },
+                    "required": ["name", "description"]
                   }
-                },
-                "required": ["name", "description", "image"]
+                }
               }
             }
           }
@@ -961,21 +971,26 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string", "example": "New Category Name" },
-                  "description": {
+                  "file": {
                     "type": "string",
-                    "example": "New Category Description"
+                    "format": "binary"
                   },
-                  "image": {
-                    "type": "string",
-                    "example": "https://example.com/new_image.png"
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string", "format": "name" },
+                      "description": {
+                        "type": "string",
+                        "format": "description"
+                      }
+                    },
+                    "required": ["name", "description"]
                   }
-                },
-                "required": ["name", "description", "image"]
+                }
               }
             }
           }
@@ -1100,24 +1115,26 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
+                  "file": {
                     "type": "string",
-                    "example": "Updated Category Name"
+                    "format": "binary"
                   },
-                  "description": {
-                    "type": "string",
-                    "example": "Updated Category Description"
-                  },
-                  "image": {
-                    "type": "string",
-                    "example": "https://example.com/updated_image.png"
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string", "format": "name" },
+                      "description": {
+                        "type": "string",
+                        "format": "description"
+                      }
+                    },
+                    "required": ["name", "description"]
                   }
-                },
-                "required": ["name", "description", "image"]
+                }
               }
             }
           }

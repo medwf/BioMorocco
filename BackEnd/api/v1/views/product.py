@@ -36,14 +36,16 @@ def createProduct(category_id=None):
     if store:
         ctg = storage.get(Category, category_id)
         if ctg:
-            if all(dt in data for dt in ('name', 'price', 'stock', 'images', 'location')):
-                product = Product(
-                    name=data['name'],
-                    category_id=ctg.id
-                )
-                storage.update(product, **data)
-                return jsonify({"message": "product created successfully"}), 200
-            return jsonify({"error": "Name and description is mandatory"}), 400
+            if ctg in store.categories:
+                if all(dt in data for dt in ('name', 'price', 'stock', 'images', 'location')):
+                    product = Product(
+                        name=data['name'],
+                        category_id=ctg.id
+                    )
+                    storage.update(product, **data)
+                    return jsonify({"message": "product created successfully"}), 200
+                return jsonify({"error": "Name and description is mandatory"}), 400
+            return jsonify({"error": "Not Allowed!"}), 400
         return jsonify({"error": "You should have category!, Create One!"}), 400
     return jsonify({"error": "You should have Store!, Create One!"}), 400
 
@@ -59,8 +61,11 @@ def updateProduct(product_id=None):
     if store:
         product = storage.get(Product, product_id)
         if product:
-            storage.update(product, **data)
-            return jsonify({"message": "Product updated successfully"}), 200
+            ctg = storage.get(Category, product.category_id)
+            if ctg in store.categories:
+                storage.update(product, **data)
+                return jsonify({"message": "Product updated successfully"}), 200
+            return jsonify({"error": "Not Allowed!"}), 400
     abort(404)
 
 
@@ -71,13 +76,19 @@ def deleteProduct(product_id: int):
     if not data:
         return jsonify({"error": "check your data send!"}), 400
 
-    prd = storage.get(Product, product_id)
-    if prd:
-        if 'password' in data and checkpw(data['password'].encode(), request.user.password.encode()):
-            for rev in prd.reviews:
-                rev.delete()
-            prd.delete()
-            storage.save()
-            return jsonify({"message": "product deleted successfully"}), 200
-        return jsonify({"error": "Your password incorrect"}), 400
-    abort(404)
+    store = request.user.store
+    if store:
+        prd = storage.get(Product, product_id)
+        if prd:
+            ctg = storage.get(Category, prd.category_id)
+            if ctg in store.categories:
+                if 'password' in data and checkpw(data['password'].encode(), request.user.password.encode()):
+                    for rev in prd.reviews:
+                        rev.delete()
+                    prd.delete()
+                    storage.save()
+                    return jsonify({"message": "product deleted successfully"}), 200
+                return jsonify({"error": "Your password incorrect"}), 400
+            return jsonify({"error": "Category Not Found!"}), 400
+        return jsonify({"error": "Product Not Found!"}), 400
+    return jsonify({"error": "Store not Found Create One!"}), 400
