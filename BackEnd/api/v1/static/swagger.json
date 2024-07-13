@@ -47,31 +47,40 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": { "type": "string", "format": "email" },
-                  "password": { "type": "string", "format": "password" },
-                  "first_name": { "type": "string" },
-                  "last_name": { "type": "string" },
-                  "country": { "type": "string" },
-                  "city": { "type": "string" },
-                  "state": { "type": "string" },
-                  "address": { "type": "string" },
-                  "phone": { "type": "string" }
-                },
-                "required": [
-                  "email",
-                  "password",
-                  "first_name",
-                  "last_name",
-                  "country",
-                  "city",
-                  "state",
-                  "address",
-                  "phone"
-                ]
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "email": { "type": "string", "format": "email" },
+                      "password": { "type": "string", "format": "password" },
+                      "first_name": { "type": "string" },
+                      "last_name": { "type": "string" },
+                      "country": { "type": "string" },
+                      "city": { "type": "string" },
+                      "state": { "type": "string" },
+                      "address": { "type": "string" },
+                      "phone": { "type": "string" }
+                    },
+                    "required": [
+                      "email",
+                      "password",
+                      "first_name",
+                      "last_name",
+                      "country",
+                      "city",
+                      "state",
+                      "address",
+                      "phone"
+                    ]
+                  }
+                }
               }
             }
           }
@@ -487,18 +496,39 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": { "type": "string", "format": "email" },
-                  "first_name": { "type": "string" },
-                  "last_name": { "type": "string" },
-                  "country": { "type": "string" },
-                  "city": { "type": "string" },
-                  "state": { "type": "string" },
-                  "address": { "type": "string" },
-                  "phone": { "type": "string" }
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "email": { "type": "string", "format": "email" },
+                      "password": { "type": "string", "format": "password" },
+                      "first_name": { "type": "string" },
+                      "last_name": { "type": "string" },
+                      "country": { "type": "string" },
+                      "city": { "type": "string" },
+                      "state": { "type": "string" },
+                      "address": { "type": "string" },
+                      "phone": { "type": "string" }
+                    },
+                    "required": [
+                      "email",
+                      "password",
+                      "first_name",
+                      "last_name",
+                      "country",
+                      "city",
+                      "state",
+                      "address",
+                      "phone"
+                    ]
+                  }
                 }
               }
             }
