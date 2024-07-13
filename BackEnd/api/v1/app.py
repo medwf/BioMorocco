@@ -14,10 +14,14 @@ from api.v1.utils.sendEmail import SendEmail
 
 # URL for exposing Swagger UI (without trailing '/')
 SWAGGER_URL = '/api/v1/docs'
-API_URL = '/api/v1/static/swagger.json'
+API_URL = '/static/swagger.json'
 
 
 app = Flask(__name__)
+UPLOAD_FOLDER = '/api/v1/static/uploads'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}},
      supports_credentials=True)
@@ -59,7 +63,9 @@ def beforeRequest() -> str:
             '/api/v1/signUp/',
             '/api/v1/login/',
             '/api/v1/forget_password/',
-            '/api/v1/docs*'
+            '/api/v1/docs*',
+            '/static/*',
+            '/uploads/*'
     ]):
         if AUTH.session_cookie(request) is None:
             abort(401)
@@ -68,8 +74,11 @@ def beforeRequest() -> str:
             abort(403)
 
 
-@app.route("/api/v1/static/swagger.json")
-def specs():
+@app.route("/static/swagger.json")
+@app.route("/uploads/<path:img>")
+def specs(img=None):
+    if img:
+        return send_from_directory(getcwd(), f"api/v1/static/uploads/{img}")
     return send_from_directory(getcwd(), "api/v1/static/swagger.json")
 
 

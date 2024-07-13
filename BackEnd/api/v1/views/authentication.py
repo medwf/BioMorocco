@@ -6,14 +6,26 @@ from api.v1.views import app_views
 def users():
     """create a user with post methods"""
     from api.v1.app import AUTH, Email
+    from api.v1.utils.image import upload_image
+    import json
 
-    data = request.get_json(force=True, silent=True)
+    data = request.form.get("data", None)
+    if data:
+        try:
+            data = json.loads(data)
+        except json.JSONDecodeError:
+            data = None
+
+    if not data and 'file' not in request.files:
+        return jsonify({'error': 'check your data Send!'}), 400
+
     if data:
         email = data.get('email', None)
         password = data.get('password', None)
 
         if email and password:
             user = AUTH.register_user(data)
+            upload_image(request, user)
             if user:
                 content = Email.signUp(
                     f'{user.first_name} {user.last_name}',
