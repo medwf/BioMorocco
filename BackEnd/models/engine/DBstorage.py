@@ -20,7 +20,10 @@ classes = {
     "User": User, "Store": Store
 }
 
-ignore = ('password', 'user_id', 'id', 'created_at', 'updated_at')
+ignore = (
+    'password', 'user_id', 'id', 'created_at',
+    'updated_at', 'image', 'images'
+)
 
 
 class DBStorage:

@@ -3,7 +3,6 @@ from api.v1.views import app_views
 from models import storage
 from models.product import Product
 from models.cart import CartItem
-from bcrypt import checkpw
 
 
 @app_views.route("/cartItems", methods=['GET'], strict_slashes=False)

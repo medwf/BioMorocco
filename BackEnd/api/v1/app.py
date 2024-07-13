@@ -7,16 +7,21 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS
 from flask import Flask, jsonify, request, abort, send_from_directory
 from api.v1.views import app_views
-from api.v1.auth.session_db_auth import SessionDBAuth
-from api.v1.auth.db_redis import RedisClient
-from api.v1.auth.sendEmail import SendEmail
+from api.v1.utils.session_db_auth import SessionDBAuth
+from api.v1.utils.db_redis import RedisClient
+from api.v1.utils.sendEmail import SendEmail
 
 
-SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
+# URL for exposing Swagger UI (without trailing '/')
+SWAGGER_URL = '/api/v1/docs'
 API_URL = '/static/swagger.json'
 
 
 app = Flask(__name__)
+UPLOAD_FOLDER = '/api/v1/static/uploads'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}},
      supports_credentials=True)
@@ -58,8 +63,9 @@ def beforeRequest() -> str:
             '/api/v1/signUp/',
             '/api/v1/login/',
             '/api/v1/forget_password/',
-            '/api/docs*',
-            '/static/*'
+            '/api/v1/docs*',
+            '/static/*',
+            '/uploads/*'
     ]):
         if AUTH.session_cookie(request) is None:
             abort(401)
@@ -69,8 +75,11 @@ def beforeRequest() -> str:
 
 
 @app.route("/static/swagger.json")
-def specs():
-    return send_from_directory(getcwd(), "static/swagger.json")
+@app.route("/uploads/<path:img>")
+def specs(img=None):
+    if img:
+        return send_from_directory(getcwd(), f"api/v1/static/uploads/{img}")
+    return send_from_directory(getcwd(), "api/v1/static/swagger.json")
 
 
 @app.teardown_appcontext
