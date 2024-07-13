@@ -12,8 +12,9 @@ from api.v1.auth.db_redis import RedisClient
 from api.v1.auth.sendEmail import SendEmail
 
 
-SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
-API_URL = '/static/swagger.json'
+# URL for exposing Swagger UI (without trailing '/')
+SWAGGER_URL = '/api/v1/docs'
+API_URL = '/api/v1/static/swagger.json'
 
 
 app = Flask(__name__)
@@ -58,8 +59,7 @@ def beforeRequest() -> str:
             '/api/v1/signUp/',
             '/api/v1/login/',
             '/api/v1/forget_password/',
-            '/api/docs*',
-            '/static/*'
+            '/api/v1/docs*'
     ]):
         if AUTH.session_cookie(request) is None:
             abort(401)
@@ -68,9 +68,9 @@ def beforeRequest() -> str:
             abort(403)
 
 
-@app.route("/static/swagger.json")
+@app.route("/api/v1/static/swagger.json")
 def specs():
-    return send_from_directory(getcwd(), "static/swagger.json")
+    return send_from_directory(getcwd(), "api/v1/static/swagger.json")
 
 
 @app.teardown_appcontext
