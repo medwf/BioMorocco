@@ -12,12 +12,6 @@ from models.category import Category
 from models.store import Store
 
 
-@app_views.route("/", strict_slashes=False, methods=["GET"])
-def Hello():
-    """ Say Hello"""
-    return make_response(jsonify({'message': 'You are Welcome'}), 200)
-
-
 @app_views.route("/status", strict_slashes=False, methods=["GET"])
 def status():
     """return status ok, 200"""

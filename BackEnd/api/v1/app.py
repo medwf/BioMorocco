@@ -7,9 +7,9 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS
 from flask import Flask, jsonify, request, abort, send_from_directory
 from api.v1.views import app_views
-from api.v1.auth.session_db_auth import SessionDBAuth
-from api.v1.auth.db_redis import RedisClient
-from api.v1.auth.sendEmail import SendEmail
+from api.v1.utils.session_db_auth import SessionDBAuth
+from api.v1.utils.db_redis import RedisClient
+from api.v1.utils.sendEmail import SendEmail
 
 
 # URL for exposing Swagger UI (without trailing '/')

@@ -84,7 +84,6 @@ class SessionDBAuth():
     def valid_login(self, email: str, password: str) -> bool:
         """Check Valid login"""
         user = storage.find_user_by(email=email)
-        # print("Valid", email, password)
         if user:
             if checkpw(password.encode(), user.password.encode()):
                 return user
