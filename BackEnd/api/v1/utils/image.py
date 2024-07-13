@@ -24,6 +24,7 @@ def generate_filename(file_extension, name, id):
 
 def rename_file(filename, obj):
     """make new file name"""
+    # print(obj)
     file_name = secure_filename(filename)
     file_extension = file_name.rsplit('.', 1)[1].lower()
     name = f'{obj.first_name}_{obj.last_name}' if type(
