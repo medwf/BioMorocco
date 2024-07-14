@@ -101,7 +101,7 @@ def deleteCategory(category_id: int):
                         for rev in prd.reviews:
                             rev.delete()
                         prd.delete()
-                    deleted_image(ctg)
+                    deleted_image(request.method, ctg)
                     ctg.delete()
                     storage.save()
                     return jsonify({"message": "Category deleted successfully"}), 200

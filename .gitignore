@@ -2,5 +2,5 @@
 __pycache__/
 BackEnd/models/engine/__pycache__/
 BackEnd/models/__pycache__/
+BackEnd/api/v1/static/uploads/
 .env
-api/v1/static/uploads/

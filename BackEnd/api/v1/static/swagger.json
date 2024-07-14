@@ -296,7 +296,7 @@
     "/api/v1/logout": {
       "delete": {
         "tags": ["Authentication"],
-        "summary": "Log out a user",
+        "summary": "Log out a user (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -347,7 +347,7 @@
     "/api/v1/profile": {
       "get": {
         "tags": ["User"],
-        "summary": "Get user profile",
+        "summary": "Get user profile (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -413,7 +413,7 @@
     "/api/v1/reset_password": {
       "put": {
         "tags": ["User"],
-        "summary": "Reset user password",
+        "summary": "Reset user password (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -482,7 +482,7 @@
     "/api/v1/users": {
       "put": {
         "tags": ["User"],
-        "summary": "Update user data",
+        "summary": "Update user (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -571,7 +571,7 @@
       },
       "delete": {
         "tags": ["User"],
-        "summary": "Delete user",
+        "summary": "Delete user (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -694,7 +694,7 @@
       },
       "put": {
         "tags": ["Store"],
-        "summary": "Update store data",
+        "summary": "Update store (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -769,7 +769,7 @@
       },
       "post": {
         "tags": ["Store"],
-        "summary": "Create new store",
+        "summary": "Create new store (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -844,7 +844,7 @@
       },
       "delete": {
         "tags": ["Store"],
-        "summary": "Delete store",
+        "summary": "Delete store (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -905,6 +905,7 @@
         }
       }
     },
+
     "/api/v1/categories": {
       "get": {
         "tags": ["Category"],
@@ -957,7 +958,7 @@
       },
       "post": {
         "tags": ["Category"],
-        "summary": "Create new Category",
+        "summary": "Create new Category (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -1093,7 +1094,7 @@
       },
       "put": {
         "tags": ["Category"],
-        "summary": "Update Category data",
+        "summary": "Update Category data (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -1176,7 +1177,7 @@
       },
       "delete": {
         "tags": ["Category"],
-        "summary": "Delete Category",
+        "summary": "Delete Category (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -1327,7 +1328,7 @@
       },
       "post": {
         "tags": ["Product"],
-        "summary": "Create Product data",
+        "summary": "Create Product (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -1349,40 +1350,50 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string", "example": "New Product Name" },
-                  "stock": {
-                    "type": "integer",
-                    "example": 100
+                  "file": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
                   },
-                  "price": {
-                    "type": "integer",
-                    "example": 10
-                  },
-                  "location": {
-                    "type": "string",
-                    "example": "New Product location"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "New Product Description"
-                  },
-                  "images": {
-                    "type": "string",
-                    "example": "https://example.com/new_image.png"
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "New Product Name"
+                      },
+                      "stock": {
+                        "type": "integer",
+                        "example": 100
+                      },
+                      "price": {
+                        "type": "integer",
+                        "example": 10
+                      },
+                      "location": {
+                        "type": "string",
+                        "example": "New Product location"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "New Product Description"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "description",
+                      "price",
+                      "location",
+                      "stock"
+                    ]
                   }
-                },
-                "required": [
-                  "name",
-                  "description",
-                  "images",
-                  "location",
-                  "price",
-                  "stock"
-                ]
+                }
               }
             }
           }
@@ -1469,7 +1480,7 @@
       },
       "put": {
         "tags": ["Product"],
-        "summary": "Update Product data",
+        "summary": "Update Product (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -1491,40 +1502,50 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string", "example": "New Product Name" },
-                  "stock": {
-                    "type": "integer",
-                    "example": 100
+                  "file": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
                   },
-                  "price": {
-                    "type": "integer",
-                    "example": 10
-                  },
-                  "location": {
-                    "type": "string",
-                    "example": "New Product location"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "New Product Description"
-                  },
-                  "images": {
-                    "type": "string",
-                    "example": "https://example.com/new_image.png"
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "New Product Name"
+                      },
+                      "stock": {
+                        "type": "integer",
+                        "example": 100
+                      },
+                      "price": {
+                        "type": "integer",
+                        "example": 10
+                      },
+                      "location": {
+                        "type": "string",
+                        "example": "New Product location"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "New Product Description"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "description",
+                      "price",
+                      "location",
+                      "stock"
+                    ]
                   }
-                },
-                "required": [
-                  "name",
-                  "description",
-                  "images",
-                  "location",
-                  "price",
-                  "stock"
-                ]
+                }
               }
             }
           }
@@ -1566,7 +1587,7 @@
       },
       "delete": {
         "tags": ["Product"],
-        "summary": "Delete Product",
+        "summary": "Delete Product (requires session_id in cookies)",
         "parameters": [
           {
             "name": "session_id",
@@ -1639,7 +1660,7 @@
     "/api/v1/cartItems": {
       "get": {
         "tags": ["CartItem"],
-        "summary": "Get all cart items",
+        "summary": "Get all cart items (requires session_id in cookies)",
         "description": "Retrieve all items in the user's cart. Requires `session_id` cookie.",
         "parameters": [
           {
@@ -1680,7 +1701,7 @@
     "/api/v1/products/{product_id}/cartItems": {
       "put": {
         "tags": ["CartItem"],
-        "summary": "Update a cart item",
+        "summary": "Update a cart item (requires session_id in cookies)",
         "description": "Update the quantity of a cart item. Requires `session_id` cookie.",
         "parameters": [
           {
@@ -1741,7 +1762,7 @@
         }
       },
       "post": {
-        "summary": "Add a product to cart",
+        "summary": "Add a product to cart (requires session_id in cookies)",
         "tags": ["CartItem"],
         "description": "Add a product to the user's cart. Requires `session_id` cookie.",
         "parameters": [
@@ -1806,7 +1827,7 @@
     "/api/v1/cartItems/{cartItem_id}": {
       "delete": {
         "tags": ["CartItem"],
-        "summary": "Delete a cart item",
+        "summary": "Delete a cart item (requires session_id in cookies)",
         "description": "Remove a cart item. Requires `session_id` cookie.",
         "parameters": [
           {
@@ -1913,8 +1934,8 @@
       },
       "post": {
         "tags": ["Order"],
-        "summary": "Create User Order",
-        "description": "Create a new order for the authenticated user.",
+        "summary": "Create User Order (requires session_id in cookies)",
+        "description": "Create a new order",
         "parameters": [
           {
             "name": "session_id",
@@ -2046,8 +2067,8 @@
       },
       "post": {
         "tags": ["Order"],
-        "summary": "Create Product Order",
-        "description": "Create a new order for a specific product.",
+        "summary": "Create Product Order (requires session_id in cookies)",
+        "description": "Create a new order for a specific product",
         "parameters": [
           {
             "name": "product_id",
@@ -2217,6 +2238,95 @@
             "description": "Product not found"
           }
         }
+      },
+      "put": {
+        "tags": ["Review"],
+        "summary": "Update review for a product (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "rating": {
+                        "type": "integer",
+                        "example": 5
+                      },
+                      "comment": {
+                        "type": "string",
+                        "example": "comment"
+                      }
+                    },
+                    "required": ["rating", "comment"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product data updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Product data updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Session ID is required"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/reviews/{review_id}": {
@@ -2245,24 +2355,30 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": ["rating", "comment"],
                 "properties": {
-                  "rating": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 5
-                  },
-                  "comment": {
-                    "type": "string"
-                  },
-                  "images": {
+                  "file": {
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "format": "binary"
                     }
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "rating": {
+                        "type": "integer",
+                        "example": 5
+                      },
+                      "comment": {
+                        "type": "string",
+                        "example": "comment"
+                      }
+                    },
+                    "required": ["rating", "comment"]
                   }
                 }
               }
@@ -2283,7 +2399,7 @@
       },
       "delete": {
         "tags": ["Review"],
-        "summary": "Delete a specific review",
+        "summary": "Delete a specific review for a product (requires session_id in cookies)",
         "parameters": [
           {
             "name": "review_id",

@@ -78,7 +78,7 @@ def deleteUser():
         # print("save delete cart")
         storage.save()
 
-        deleted_image(request.user)
+        deleted_image(request.method, request.user)
         # print("delete user")
         storage.delete(request.user)
         # print("save delete user")

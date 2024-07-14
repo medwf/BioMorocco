@@ -23,9 +23,18 @@ def yourReviews(product_id=None, review_id=None):
 @app_views.route("/products/<int:product_id>/reviews", methods=['POST'], strict_slashes=False)
 def createReviews(product_id):
     """POST category data"""
-    data = request.get_json(force=True, silent=True)
-    if not data:
-        return jsonify({"error": "check your data send!"}), 400
+    from api.v1.utils.image import upload_image
+    import json
+
+    data = request.form.get("data", None)
+    if data:
+        try:
+            data = json.loads(data)
+        except json.JSONDecodeError:
+            data = None
+
+    if not data and 'file' not in request.files:
+        return jsonify({'error': 'check your data Send!'}), 400
 
     product = storage.get(Product, product_id)
     if product:
@@ -36,6 +45,7 @@ def createReviews(product_id):
                 user_id=request.user.id
             )
             storage.update(rev, **data)
+            upload_image(request, rev)
             return jsonify({"message": "Review created successfully"}), 200
         return jsonify({"error": "rating is mandatory"}), 400
     return jsonify({"error": "product Not Found!"}), 404
@@ -44,13 +54,24 @@ def createReviews(product_id):
 @app_views.route("/reviews/<int:review_id>", methods=['PUT'], strict_slashes=False)
 def updateReviews(review_id: int):
     """update category data"""
-    data = request.get_json(force=True, silent=True)
-    if not data:
-        return jsonify({"error": "check your data send!"}), 400
+    from api.v1.utils.image import upload_image
+    import json
 
-    review = storage.get(Review, review_id)
+    data = request.form.get("data", None)
+    if data:
+        try:
+            data = json.loads(data)
+        except json.JSONDecodeError:
+            data = None
+
+    if not data and 'file' not in request.files:
+        return jsonify({'error': 'check your data Send!'}), 400
+
+    review = request.user.reviews
     if review:
-        storage.update(review, **data)
+        if data:
+            storage.update(review, **data)
+        upload_image(request, review)
         return jsonify({"message": "review updated successfully"}), 200
     abort(404)
 
@@ -58,10 +79,12 @@ def updateReviews(review_id: int):
 @app_views.route("/reviews/<int:review_id>", methods=['DELETE'], strict_slashes=False)
 def deleteReviews(review_id: int):
     """delete category"""
-
-    review = storage.get(Review, review_id)
+    from api.v1.utils.image import deleted_image
+    review = request.user.reviews
+    # review = storage.get(Review, review_id)
     if review:
         review.delete()
+        deleted_image('DELETE', review)
         storage.save()
         return jsonify({"message": "review deleted successfully"}), 200
     abort(404)

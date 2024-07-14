@@ -19,7 +19,7 @@ def yourStore():
 @app_views.route("/store", methods=['PUT'], strict_slashes=False)
 def updateStore():
     """update store data"""
-    from api.v1.utils.image import upload_image
+    from api.v1.utils.image import upload_image, deleted_image
     import json
 
     data = request.form.get("data", None)
@@ -91,7 +91,7 @@ def deleteStore():
                         rev.delete()
                     prd.delete()
                 ctg.delete()
-            deleted_image(store)
+            deleted_image(request.method, store)
             store.delete()
             storage.save()
             return jsonify({"message": "Store deleted successfully"}), 200
