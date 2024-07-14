@@ -12,7 +12,7 @@ This project is the backend for my portfolio website. It is built using Flask, a
 - User `authentication` and `authorization`
 - `Sending emails` for user notifications (sign-up and password recovery, and new Orders and Low stock dedicated)
 - `CRUD operations` for projects and other portfolio elements
-- supports `image uploads` and organizes them efficiently.
+- supports `images uploads` and organizes them efficiently.
 - Integration with `MySQL` for persistent data storage
 - `Redis` integration for storing session IDs and password recovery codes with Expiration.
 

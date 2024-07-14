@@ -50,18 +50,20 @@ class BaseModel:
 
     def to_dict(self, save_fs=False):
         """returns a dictionary containing all keys/values of the instance"""
+        import json
         new_dict = self.__dict__.copy()
         if "created_at" in new_dict:
             new_dict["created_at"] = new_dict["created_at"].strftime(time)
         if "updated_at" in new_dict:
             new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
 
+        if 'images' in new_dict:
+            new_dict['images'] = json.loads(new_dict['images'])
+
         if not save_fs and "password" in new_dict:
             del new_dict["password"]
 
-        keys = [
-            "_sa_instance_state", "userValidEmail",
-            "reset_token", "session_id"]
+        keys = ["_sa_instance_state", "userValidEmail"]
         for key in keys:
             if key in new_dict:
                 del new_dict[key]

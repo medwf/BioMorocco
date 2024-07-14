@@ -1349,40 +1349,50 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string", "example": "New Product Name" },
-                  "stock": {
-                    "type": "integer",
-                    "example": 100
+                  "file": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
                   },
-                  "price": {
-                    "type": "integer",
-                    "example": 10
-                  },
-                  "location": {
-                    "type": "string",
-                    "example": "New Product location"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "New Product Description"
-                  },
-                  "images": {
-                    "type": "string",
-                    "example": "https://example.com/new_image.png"
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "New Product Name"
+                      },
+                      "stock": {
+                        "type": "integer",
+                        "example": 100
+                      },
+                      "price": {
+                        "type": "integer",
+                        "example": 10
+                      },
+                      "location": {
+                        "type": "string",
+                        "example": "New Product location"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "New Product Description"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "description",
+                      "price",
+                      "location",
+                      "stock"
+                    ]
                   }
-                },
-                "required": [
-                  "name",
-                  "description",
-                  "images",
-                  "location",
-                  "price",
-                  "stock"
-                ]
+                }
               }
             }
           }
@@ -1491,40 +1501,50 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string", "example": "New Product Name" },
-                  "stock": {
-                    "type": "integer",
-                    "example": 100
+                  "file": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
                   },
-                  "price": {
-                    "type": "integer",
-                    "example": 10
-                  },
-                  "location": {
-                    "type": "string",
-                    "example": "New Product location"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "New Product Description"
-                  },
-                  "images": {
-                    "type": "string",
-                    "example": "https://example.com/new_image.png"
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "New Product Name"
+                      },
+                      "stock": {
+                        "type": "integer",
+                        "example": 100
+                      },
+                      "price": {
+                        "type": "integer",
+                        "example": 10
+                      },
+                      "location": {
+                        "type": "string",
+                        "example": "New Product location"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "New Product Description"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "description",
+                      "price",
+                      "location",
+                      "stock"
+                    ]
                   }
-                },
-                "required": [
-                  "name",
-                  "description",
-                  "images",
-                  "location",
-                  "price",
-                  "stock"
-                ]
+                }
               }
             }
           }
@@ -2245,24 +2265,24 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": ["rating", "comment"],
                 "properties": {
-                  "rating": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 5
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
                   },
-                  "comment": {
-                    "type": "string"
-                  },
-                  "images": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string", "format": "name" },
+                      "description": {
+                        "type": "string",
+                        "format": "description"
+                      }
+                    },
+                    "required": ["name", "description"]
                   }
                 }
               }
