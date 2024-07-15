@@ -12,9 +12,11 @@ This project is the backend for my portfolio website. It is built using Flask, a
 - User `authentication` and `authorization`
 - `Sending emails` for user notifications (sign-up and password recovery, and new Orders and Low stock dedicated)
 - `CRUD operations` for projects and other portfolio elements
-- supports `images uploads` and organizes them efficiently.
+- Use `JSON` to store a list of image paths as a string in the database. This allows for easy storage and retrieval of multiple image references associated with various objects.
 - Integration with `MySQL` for persistent data storage
 - `Redis` integration for storing session IDs and password recovery codes with Expiration.
+- Containerization with `Docker` for easy deployment
+- Multi-container management with `Docker-Compose` for development and testing
 
 ## Technologies Used
 
@@ -23,16 +25,16 @@ This project is the backend for my portfolio website. It is built using Flask, a
 - **SQLAlchemy**: ORM for database interactions
 - **Flask-RESTful**: Extension for building REST APIs with Flask
 - **Redis**: In-memory data structure store for session management
-- **smtplib**: Python library for sending email.
+- **smtplib**: Python library for sending email
+- **Docker**: Containerization platform
+- **Docker-Compose**: Tool for defining and running multi-container Docker applications
 
 ## Setup and Installation
 
 ### Prerequisites
 
 - Python 3.x
-- MySQL
-- Redis
-- pip (Python package installer)
+- Docker and Docker-Compose
 
 ### Steps
 
@@ -40,71 +42,64 @@ This project is the backend for my portfolio website. It is built using Flask, a
 
    ```bash
    git clone https://github.com/medwf/BioMorocco.git
-   cd BioMorocco/BackEnd
+   cd BioMorocco
    ```
 
-2. **Create and activate a virtual environment:**
+2. **Set up environment variables:**
 
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
-
-3. **Install the required packages:**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Set up the MySQL database and Redis:**
-
-   - Install Redis on your machine.
-   - Install MySQL on your machine.
-   - Refer to `BioMorocco/BackEnd/mysql/mysql-startup.sql` file.
-   - To set up MySQL, run the following in the root directory of BackEnd:
-
-   ```bash
-   cat BackEnd/mysql/mysql-startup.sql | sudo mysql -u root
-   ```
-
-5. **Set up environment variables:**
-
-   - Create a `.env` file in the root directory of your project:
+   - Create a `.env` file in the root directory with the following content:
 
      ```env
-     API_HOST=localhost
-     API_PORT=5000
-     # add all other necessary environment variables
+     # just a example.
+
+     FLASK_ENV=development
+     MYSQL_HOST=db
+     MYSQL_USER=USER
+     MYSQL_PASSWORD=USER2024
+     MYSQL_DB=DB
+     REDIS_HOST=redis
+     REDIS_PORT=6379
      ```
 
-   - Load environment variables in your Python script:
+3. **Build and Start the Containers:**
 
-     ```python
-     from dotenv import load_dotenv
-     import os
+   - Run the following command to build and start all services:
 
-     load_dotenv()
-     # Use os.getenv("name of env that you want")
+     ```bash
+     docker-compose up --build
      ```
 
-6. **Run MySQL and Redis:**
+   - This command will:
+     - Build the Flask backend application.
+     - Start the MySQL database with the specified user and database.
+     - Start the Redis server.
 
-   ```bash
-   # Check status:
-   sudo service mysql status # if not running
-   sudo service redis status # if not running
-   # Start or restart services:
-   sudo service mysql start/restart
-   sudo service redis start/restart
-   ```
+4. **Accessing the Application:**
 
-7. **Run the application:**
+   - Once all services are up and running, the Flask application will be accessible at `http://localhost:5000`.
+   - MySQL will be running on port `3306` and Redis on port `6379`.
 
-   ```bash
-   ./run
-   ```
+5. **Managing Containers:**
 
-   The application should now be running on `http://127.0.0.1:5000`.
+   - To stop the containers, run:
+
+     ```bash
+     # for stop container
+     docker-compose stop
+
+     # to delete all container
+     docker-compose down
+     ```
+
+   - To rebuild and start the containers, run:
+
+     ```bash
+     # rebuild container.
+     docker-compose up --build
+
+     # for starting container after stop.
+     docker-compose start
+     ```
 
 ## API Endpoints Documentation
 
@@ -209,4 +204,4 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-For any inquiries or issues, please contact [LinkedIn](https://www.linkedin.com/in/mohamed-wafi-a65277273/) or [Gmail](med.wf95@gmail.com).
+For any inquiries or issues, please contact [LinkedIn](https://www.linkedin.com/in/mohamed-wafi-a65277273/) or [Gmail](mailto:med.wf95@gmail.com).

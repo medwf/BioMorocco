@@ -3,13 +3,16 @@
 This model for redis client
 """
 import redis
+from os import getenv
 
 
 class RedisClient:
     """define class RedisClient"""
 
     def __init__(self):
-        self.client = redis.Redis()
+        HOST = getenv("REDIS_HOST", "localhost")
+        PORT = getenv("REDIS_PORT", 6379)
+        self.client = redis.Redis(host=HOST, port=PORT)
         self.is_connected = True
 
         try:

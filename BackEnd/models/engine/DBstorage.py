@@ -36,7 +36,7 @@ class DBStorage:
         """Instantiate a DBStorage object"""
         BioMrc_USER = getenv('BioMrc_USER')
         BioMrc_PWD = getenv('BioMrc_PWD')
-        BioMrc_HOST = getenv('BioMrc_HOST')
+        BioMrc_HOST = getenv('BioMrc_HOST', "localhost")
         BioMrc_DB = getenv('BioMrc_DB')
         BioMrc_ENV = getenv('BioMrc_ENV')
         self.__engine = create_engine(

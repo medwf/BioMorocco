@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+
+  backend:
+    build: ./BackEnd
+    container_name: flask_app
+    command: sh -c "sleep 10 && flask run --host=0.0.0.0"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: mysql:8.0.37
+    container_name: mysql_db
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PWD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./BackEnd/mysql/mysql-startup.sql:/docker-entrypoint-initdb.d/mysql-startup.sql:ro
+
+  redis:
+    image: redis:6.0.16
+    container_name: redis_server
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql_data:
