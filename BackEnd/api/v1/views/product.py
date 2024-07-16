@@ -53,7 +53,7 @@ def createProduct(category_id=None):
                         category_id=ctg.id
                     )
                     storage.update(product, **data)
-                    print("* -- Uploading images -- *")
+                    # print("* -- Uploading images -- *")
                     upload_image(request, product)
                     return jsonify({"message": "product created successfully"}), 200
                 return jsonify({"error": "Name, description, price, images, stock is mandatory"}), 400

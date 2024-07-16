@@ -35,7 +35,7 @@ def createCategory():
         except json.JSONDecodeError:
             data = None
 
-    if not data and 'file' not in request.files:
+    if not data:
         return jsonify({"error": "check your data send!"})
 
     store = request.user.store

@@ -56,18 +56,19 @@ def deleted_image(method, obj):
         try:
             images = json.loads(obj.images)
         except json.JSONDecodeError:
-            obj.images = None
+            obj.images = ''
             obj.save()
             images = {}
     else:
         images = {1: obj.image}
     # print(images)
     for img in images.values():
-        old_img = os.path.join(f"{os.getcwd()}/api/v1/static", img[1:])
-        if os.path.exists(old_img):
-            os.remove(old_img)
+        if img:
+            old_img = os.path.join(f"{os.getcwd()}/api/v1/static", img[1:])
+            if os.path.exists(old_img):
+                os.remove(old_img)
     if method == 'DELETE':
-        folder = f"{os.getcwd()}/api/v1/static/uploads/{name_class}/{name_class}_{obj.id}"
+        folder = f"{os.getcwd()}{UPLOAD_FOLDER}/{name_class}/{name_class}_{obj.id}"
         if os.path.exists(folder):
             os.rmdir(folder)
 
@@ -80,10 +81,10 @@ def upload_image(request, obj):
         # file = request.files['file']
         # print("*", request.files['file'])
         files = request.files.getlist('file')
-        print("**", files)
+        # print("**", files)
         files_path = {}
         for file in files:
-            print("***", file)
+            # print("***", file)
 
             if len(file.filename):
                 if file and allowed_file(file.filename):
@@ -102,7 +103,7 @@ def upload_image(request, obj):
                     # print('image saved')
                 else:
                     continue
-        print(f"__ {files_path} __")
+        # print(f"__ {files_path} __")
         if request.method == 'PUT':
             deleted_image('PUT', obj)
         if name_class in MULTI_IMAGE:

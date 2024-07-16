@@ -1372,6 +1372,10 @@
                         "type": "integer",
                         "example": 100
                       },
+                      "declare_stock": {
+                        "type": "integer",
+                        "example": 10
+                      },
                       "price": {
                         "type": "integer",
                         "example": 10
@@ -1523,6 +1527,10 @@
                       "stock": {
                         "type": "integer",
                         "example": 100
+                      },
+                      "declare_stock": {
+                        "type": "integer",
+                        "example": 10
                       },
                       "price": {
                         "type": "integer",

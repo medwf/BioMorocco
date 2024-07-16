@@ -25,12 +25,12 @@ def users():
 
         if email and password:
             user = AUTH.register_user(data)
-            upload_image(request, user)
             if user:
                 content = Email.signUp(
                     f'{user.first_name} {user.last_name}',
                     email
                 )
+                upload_image(request, user)
                 Email.sendEmail(email, content)
                 return jsonify({'email': email, 'message': 'user created'}), 201
             return jsonify({'message': 'Email already registered'}), 400

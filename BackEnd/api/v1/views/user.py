@@ -50,7 +50,7 @@ def reset_password():
                     request.user.password = new_password
                     request.user.save()
                     return jsonify({'message': 'password changed'}), 200
-                return jsonify({'error': 'new_password be same as confirmed'}), 400
+                return jsonify({'error': 'new_password should be same as confirmed'}), 400
             return jsonify({'error': 'password not correct'}), 400
         return jsonify({'error': 'should have password and confirmed and new one'}), 400
     return jsonify({'error': 'check your data send'}), 400
@@ -68,20 +68,27 @@ def deleteUser():
         return jsonify({"error": "check your data send!"}), 400
 
     if 'password' in data and checkpw(data['password'].encode(), request.user.password.encode()):
-        AUTH.destroy_session()
         cart = request.user.cart
         if cart:
             for cartItem in cart.cartItems:
                 cartItem.delete()
-            # print("delete cart ->")
-            cart.delete()
-        # print("save delete cart")
-        storage.save()
+        store = request.user.store
+        if store:
+            for ctg in store.categories:
+                for prd in ctg.products:
+                    for rev in prd.reviews:
+                        deleted_image(request.method, rev)
+                    deleted_image(request.method, prd)
+                deleted_image(request.method, ctg)
+            deleted_image(request.method, store)
+        reviews = request.user.reviews
+        if reviews:
+            for rev in reviews:
+                deleted_image(request.method, rev)
 
         deleted_image(request.method, request.user)
-        # print("delete user")
+        AUTH.destroy_session()
         storage.delete(request.user)
-        # print("save delete user")
         storage.save()
         return jsonify({'message': 'Your account was deleted!'}), 200
     return jsonify({"error": "Your password incorrect"}), 400

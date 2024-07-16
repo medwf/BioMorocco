@@ -79,7 +79,7 @@ def createOrders(product_id=None):
             owner = storage.get(User, store.user_id)
 
             # sending msg tell then that your store product is last then 10.
-            if product.stock < 10:
+            if product.stock < product.declare_stock:
                 content = Email.create_content_for_low_stock_dedicated(
                     owner, product
                 )

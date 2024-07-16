@@ -18,7 +18,6 @@ API_URL = '/static/swagger.json'
 
 app = Flask(__name__)
 UPLOAD_FOLDER = '/api/v1/static/uploads'
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 app.register_blueprint(app_views)
@@ -67,7 +66,7 @@ def beforeRequest() -> str:
 
 @app.route("/static/swagger.json")
 @app.route("/uploads/<path:img>")
-def specs(img=None):
+def send_file(img=None):
     if img:
         return send_from_directory(getcwd(), f"api/v1/static/uploads/{img}")
     return send_from_directory(getcwd(), "api/v1/static/swagger.json")

@@ -57,7 +57,7 @@ class BaseModel:
         if "updated_at" in new_dict:
             new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
 
-        if 'images' in new_dict:
+        if 'images' in new_dict and len(new_dict['images']):
             new_dict['images'] = json.loads(new_dict['images'])
 
         if not save_fs and "password" in new_dict:

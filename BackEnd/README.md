@@ -63,6 +63,7 @@ This project is the backend for my portfolio website. It is built using Flask, a
 
 3. **Build and Start the Containers:**
 
+   - go back to the route repo.
    - Run the following command to build and start all services:
 
      ```bash
