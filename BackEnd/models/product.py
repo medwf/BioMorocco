@@ -15,7 +15,7 @@ class Product(BaseModel, Base):
     description = Column(TEXT, nullable=True)
     price = Column(Integer, nullable=False)
     stock = Column(Integer, nullable=False)
-    declare_stock = Column(Integer, nullable=False, default=10)
+    reminder_stock = Column(Integer, nullable=False, default=10)
     images = Column(TEXT, nullable=False)
 
     # should add sum of rating in review / num of review

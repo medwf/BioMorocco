@@ -1372,7 +1372,7 @@
                         "type": "integer",
                         "example": 100
                       },
-                      "declare_stock": {
+                      "reminder_stock": {
                         "type": "integer",
                         "example": 10
                       },
@@ -1528,7 +1528,7 @@
                         "type": "integer",
                         "example": 100
                       },
-                      "declare_stock": {
+                      "reminder_stock": {
                         "type": "integer",
                         "example": 10
                       },
