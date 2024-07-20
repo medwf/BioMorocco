@@ -95,23 +95,39 @@ class SessionDBAuth():
         from api.v1.app import redis_client
 
         session_id = _generate_uuid()
+
+        get_exp = getenv("SESSION_EXP", "1-day")
+        multi, time = get_exp.split("-")
+        duration = TIME_EXPIRATION[time] * int(multi)
+
         redis_client.set(
-            f"auth_{session_id}", user.id,
-            TIME_EXPIRATION[getenv("SESSION_EXP", "day")]
+            f"auth_{session_id}",
+            user.id,
+            duration
         )
         return session_id
 
     @staticmethod
-    def create_code_for_reset_password(user_id, expire, multi):
+    def create_code_for_reset_password(user_id):
         """create code by define expiration 2m"""
         from random import randint
         from api.v1.app import redis_client
 
         code = randint(100000, 999999)
+
+        get_exp = getenv('REST_PASSWORD_EXP', '2-min')
+        multi, time = get_exp.split("-")
+        print(multi, time)
+        duration = TIME_EXPIRATION[time] * int(multi)
+        print(TIME_EXPIRATION[time])
+        print(duration)
+
         redis_client.set(
-            f"code_{code}", user_id,
-            TIME_EXPIRATION[expire] * multi
+            f"code_{code}",
+            user_id,
+            duration
         )
+        print(code)
         return code
 
     @staticmethod
