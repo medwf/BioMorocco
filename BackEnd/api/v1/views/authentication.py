@@ -71,7 +71,7 @@ def get_forget_password():
     if data and 'email' in data:
         user = storage.find_user_by(email=data['email'])
         if user:
-            code = AUTH.create_code_for_reset_password(user.id, 'min', 2)
+            code = AUTH.create_code_for_reset_password(user.id)
             content = Email.create_content_for_forget_Password(
                 f"{user.first_name} {user.last_name}", user.email, code
             )
