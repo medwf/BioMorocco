@@ -1,4 +1,4 @@
-# Welcome to `BioMorocco` 🌿
+# 🌿 Welcome to BioMorocco 🌿
 
 ![BioMorocco logo light](static/2.png)
 ![BioMorocco logo dark](static/1.png)

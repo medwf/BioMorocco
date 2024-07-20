@@ -19,7 +19,7 @@ class Product(BaseModel, Base):
     images = Column(TEXT, nullable=False)
 
     # should add sum of rating in review / num of review
-    total_rating = Column(Integer, nullable=True)
+    total_rating = Column(Integer, nullable=True, default=5)
     location = Column(String(255), nullable=False)
 
     # make table for category

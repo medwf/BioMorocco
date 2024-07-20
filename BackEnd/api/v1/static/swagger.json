@@ -2167,7 +2167,7 @@
       }
     },
 
-    "/products/{product_id}/reviews/{review_id}": {
+    "/api/v1/products/{product_id}/reviews/{review_id}": {
       "get": {
         "tags": ["Review"],
         "summary": "Get a specific review for a product",
@@ -2211,7 +2211,74 @@
         }
       }
     },
-    "/products/{product_id}/reviews": {
+    "/api/v1/products/{product_id}/reviews": {
+      "post": {
+        "summary": "Create a new review for a product (requires session_id in cookies)",
+        "tags": ["Review"],
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the review",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "rating": {
+                        "type": "integer",
+                        "example": 5
+                      },
+                      "comment": {
+                        "type": "string",
+                        "example": "comment"
+                      }
+                    },
+                    "required": ["rating", "comment"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Review created successfully"
+          },
+          "400": {
+            "description": "Invalid request body (missing required fields, invalid rating value, etc.)"
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid session_id)"
+          }
+        }
+      },
       "get": {
         "tags": ["Review"],
         "summary": "Get all reviews for a product",
@@ -2337,74 +2404,7 @@
         }
       }
     },
-    "/reviews/{review_id}": {
-      "post": {
-        "summary": "Create a new review for a product (requires session_id in cookies)",
-        "tags": ["Review"],
-        "parameters": [
-          {
-            "name": "session_id",
-            "in": "cookie",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "review_id",
-            "in": "path",
-            "required": true,
-            "description": "The ID of the review",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    }
-                  },
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "rating": {
-                        "type": "integer",
-                        "example": 5
-                      },
-                      "comment": {
-                        "type": "string",
-                        "example": "comment"
-                      }
-                    },
-                    "required": ["rating", "comment"]
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Review created successfully"
-          },
-          "400": {
-            "description": "Invalid request body (missing required fields, invalid rating value, etc.)"
-          },
-          "401": {
-            "description": "Unauthorized (missing or invalid session_id)"
-          }
-        }
-      },
+    "/api/v1/reviews/{review_id}": {
       "delete": {
         "tags": ["Review"],
         "summary": "Delete a specific review for a product (requires session_id in cookies)",

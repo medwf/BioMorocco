@@ -62,6 +62,7 @@ def beforeRequest() -> str:
         request.user = AUTH.current_user(request)
         if request.user is None:
             abort(403)
+        # print(request.user)
 
 
 @app.route("/static/swagger.json")
