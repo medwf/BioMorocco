@@ -1,24 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import Navbar from "./Components/Navbar/Navbar";
 
 function App() {
+  const currentTheme = localStorage.getItem('currentTheme');
+  const [theme, setTheme] = useState(currentTheme ? currentTheme : 'light');
+
+  useEffect(() => {
+    localStorage.setItem('currentTheme', theme)
+  }, [theme])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className={`container ${theme}`}>
+        <Navbar theme={theme} setTheme={setTheme} />
+        <hr></hr>
+      </div>
   );
 }
 
