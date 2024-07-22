@@ -1,7 +1,6 @@
 # 🌿 Welcome to BioMorocco 🌿
 
-![BioMorocco logo light](static/2.png)
-![BioMorocco logo dark](static/1.png)
+![BioMorocco logo](static/logo.jpg)
 
 Welcome to `BioMorocco`, your one-stop destination for `premium organic products in Morocco!` Our mission is to bring you the finest selection of bio products, sourced sustainably and delivered with care. From the rich essence of argan oil to a diverse range of organic goods, we ensure the highest quality and authenticity in every product.
 
