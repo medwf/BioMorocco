@@ -1,5 +1,6 @@
-import React from 'react'
+import React, {useState } from 'react'
 import useWindowSize from '../WindowsSize/windowsSize';
+import Sidebar from '../SideBar/SideBar';
 
 import logo from '../../assets/light.jpg'
 import search from '../../assets/search-w.png'
@@ -14,10 +15,23 @@ const Navbar = () => {
 
   const [width] = useWindowSize();
 
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleSidebarClose = () => {
+    setSidebarOpen(false);
+  };
+
   return (
     <div className='navbar'>
       {width < 1163 && (
-          <HiBars3BottomLeft size="34px" className='left-bar'/>
+        <>
+          <Sidebar isOpen={isSidebarOpen} onClose={handleSidebarClose} />
+          <HiBars3BottomLeft size="34px" className='left-bar' onClick={toggleSidebar}/>
+        </>
       )}
       {width > 900 && (
         <img src={logo} alt='logo' className='logo'/>
@@ -38,7 +52,7 @@ const Navbar = () => {
       </div>
 
         <div className='user'>
-          <FaUser size="32px" className='user-icon'/>
+          <FaUser className='user-icon'/>
           {width > 814 && (
             <div className='user-info'>
               <p id="user-name">Welcome</p>
@@ -48,7 +62,7 @@ const Navbar = () => {
         </div>
       
       <div className='cart'>
-        <MdOutlineLocalGroceryStore size="40px" className="cart-icon"/>
+        <MdOutlineLocalGroceryStore className="cart-icon"/>
         <span className='cart-count'>0</span>
       </div>
     </div>

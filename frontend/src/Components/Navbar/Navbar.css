@@ -10,6 +10,7 @@
 .left-bar {
   cursor: pointer;
   margin: 0px 10px;
+  color: #2f4858;
 }
 
 .logo {
@@ -20,7 +21,7 @@
 ul {
   flex: 1;
   list-style-type: none;
-  text-align: left;
+  text-align: center;
 }
 
 ul li {
@@ -29,24 +30,22 @@ ul li {
   font-size: 22px;
   cursor: pointer;
   font-weight: bold;
+  color: #2f4858;
 }
 
-.toggle-icon {
-  width: 30px;
-  cursor: pointer;
-  margin-left: 40px;
+ul li:hover {
+  color: #053500;
 }
 
 .search-box {
   flex: 1;
-  margin: 0px 20px;
+  margin: 0px 10px;
   display: flex;
   height: 38px;
   align-items: center;
-  background: #242424;
-  padding: 10px 20px;
+  background: #053500;
+  padding: 0px 14px;
   border-radius: 10px;
-  transition: 0.5px;
 }
 
 .search-box input {
@@ -55,8 +54,8 @@ ul li {
   border: 0;
   outline: 0;
   color: #fff;
-  font-size: 14px;
-  max-width: 400px;
+  font-size: 16px;
+  max-width: 300px;
 }
 
 .search-box input::placeholder {
@@ -74,14 +73,27 @@ ul li {
   display: flex;
   height: 38px;
   align-items: center;
-  padding: 10px 20px;
+  padding: 0px 2px;
   border-radius: 10px;
+}
+
+.user :hover {
+  color: #053500;
+}
+
+.user-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 20px;
+  box-shadow: #053500 0px 0px 0px 1px;
+  color: #053500;
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
-  margin-left: 10px;
+  margin-left: 5px;
+  color: #2f4858;
 }
 
 #Account {
@@ -89,8 +101,11 @@ ul li {
 }
 
 .cart .cart-icon {
+  width: 44px;
+  height: 44px;
   cursor: pointer;
-  margin-left: 20px;
+  margin-left: 10px;
+  color: #053500;
 }
 
 .cart {
@@ -99,29 +114,33 @@ ul li {
   display: flex;
   height: 38px;
   align-items: center;
-  /* padding: 10px 20px; */
+
   border-radius: 10px;
-  margin-right: 15px;
+  margin-right: 5px;
 }
 
 .cart .cart-count {
-  margin-left: -30px;
-  margin-bottom: 28px;
+  margin-left: -26px;
+  margin-bottom: 21px;
 
-  /* background-color: #008181; */
-  /* box-shadow: #1084be 0px 0px 0px 1px; */
+  box-shadow: #ffff 0px 0px 0px 2px;
   color: #2f4858;
 
-  line-height: 20px;
-
   display: inline-block;
-  width: 22px; /* Increased width */
-  height: 16px; /* Increased height */
-  line-height: 16px; /* Increased line-height to match height */
+  width: 27px; /* Increased width */
+  height: 27px; /* Increased height */
+  line-height: 27px; /* Increased line-height to match height */
   border-radius: 50%;
   background-color: white;
 
   text-align: center;
-  font-size: 30px; /* Increased font size */
+  font-size: 26px; /* Increased font size */
   font-weight: bold;
+}
+
+.cart .cart-icon :hover {
+  color: #2f4858;
+}
+.cart .cart-count :hover {
+  color: #053500;
 }
