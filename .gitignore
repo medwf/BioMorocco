@@ -5,3 +5,4 @@ BackEnd/models/__pycache__/
 BackEnd/api/v1/static/uploads/
 package-lock.json
 node_modules
+.vscode

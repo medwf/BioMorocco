@@ -1,8 +1,9 @@
 import React, {useState } from 'react'
+import { Link } from 'react-router-dom';
 import useWindowSize from '../WindowsSize/windowsSize';
 import Sidebar from '../SideBar/SideBar';
 
-import logo from '../../assets/light.jpg'
+import logo from '../../assets/download.png'
 import search from '../../assets/search-w.png'
 import { FaUser } from "react-icons/fa";
 import { MdOutlineLocalGroceryStore } from "react-icons/md";
@@ -31,41 +32,46 @@ const Navbar = () => {
         <>
           <Sidebar isOpen={isSidebarOpen} onClose={handleSidebarClose} />
           <HiBars3BottomLeft size="34px" className='left-bar' onClick={toggleSidebar}/>
-        </>
-      )}
+        </>)}
+
       {width > 900 && (
-        <img src={logo} alt='logo' className='logo'/>
+        <Link to="/">
+          <img src={logo} alt='logo' className='logo'/>
+        </Link>
       )}
 
       {width > 1250 && (
-      <ul>
-        <li>Stores</li>
-        <li>Products</li>
-        <li>About</li>
-      </ul>
-
-      )}
+        <nav>
+          <ul>
+              <Link to="/products" >Products</Link>
+              <Link to="/about" >About</Link>
+          </ul>
+        </nav>)}
 
       <div className='search-box'>
         <img src={search} alt='icon-search'/>
         <input type='text' placeholder='What are you looking for ?'/>
       </div>
 
-        <div className='user'>
-          <FaUser className='user-icon'/>
-          {width > 814 && (
-            <div className='user-info'>
-              <p id="user-name">Welcome</p>
-              <p id="Account">Sign in / Register</p>
-            </div>
-          )}
-        </div>
+        <Link to="/authentication">
+            {width > 814 && (
+          <div className='user'>
+            <FaUser className='user-icon'/>
+              <div className='user-info'>
+                <p id="user-name">Welcome</p>
+                <p id="Account">Sign in / Register</p>
+              </div>
+          </div>
+            )}
+        </Link>
       
-      <div className='cart'>
-        <MdOutlineLocalGroceryStore className="cart-icon"/>
-        <span className='cart-count'>0</span>
+      <Link to="not_yet">
+        <div className='cart'>
+          <MdOutlineLocalGroceryStore className="cart-icon"/>
+          <span className='cart-count'>0</span>
+        </div>
+    </Link>
       </div>
-    </div>
   )
 }
 
