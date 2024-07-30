@@ -6,10 +6,10 @@ from models.product import Product
 
 
 @app_views.route("/products/<int:product_id>/reviews", methods=['GET'], strict_slashes=False)
-@app_views.route("/products/<int:product_id>/reviews/<int:review_id>", methods=['GET'], strict_slashes=False)
+@app_views.route("/reviews/<int:review_id>", methods=['GET'], strict_slashes=False)
 def yourReviews(product_id=None, review_id=None):
     """get category data"""
-    if product_id and review_id:
+    if review_id:
         rvw = storage.get(Review, review_id)
         if rvw:
             return jsonify({'review': rvw.to_dict()})
@@ -27,11 +27,10 @@ def createReviews(product_id):
     import json
 
     data = request.form.get("data", None)
-    if data:
-        try:
-            data = json.loads(data)
-        except json.JSONDecodeError:
-            data = None
+    try:
+        data = json.loads(data)
+    except json.JSONDecodeError:
+        data = None
 
     if not data and 'file' not in request.files:
         return jsonify({'error': 'check your data Send!'}), 400
@@ -47,8 +46,8 @@ def createReviews(product_id):
             storage.update(rev, **data)
             upload_image(request, rev)
             return jsonify({"message": "Review created successfully"}), 200
-        return jsonify({"error": "rating is mandatory"}), 400
-    return jsonify({"error": "product Not Found!"}), 404
+        return jsonify({"error": "Rating is mandatory"}), 400
+    return jsonify({"error": "Product Not Found!"}), 404
 
 
 @app_views.route("/reviews/<int:review_id>", methods=['PUT'], strict_slashes=False)

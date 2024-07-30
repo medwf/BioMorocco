@@ -8,8 +8,10 @@ def profile():
     """get profile based on session id"""
     return jsonify({
         'user': request.user.to_dict(),
-        'cart': request.user.cart.to_dict(),
-        'cartItems': [item.to_dict() for item in request.user.cart.cartItems]
+        'cartItems': [item.to_dict() for item in request.user.cartItems],
+        'address': [add.to_dict() for add in request.user.addresses],
+        'wishlists': [wish.to_dict() for wish in request.user.wishlists],
+        'searches': [srx.to_dict() for srx in request.user.searches]
     }), 200
 
 
@@ -25,7 +27,6 @@ def UpdateUser():
             data = json.loads(data)
         except json.JSONDecodeError:
             data = None
-    # print("*", data, type(data))
 
     if not data and 'file' not in request.files:
         return jsonify({'error': 'check your data Send!'}), 400
@@ -68,23 +69,11 @@ def deleteUser():
         return jsonify({"error": "check your data send!"}), 400
 
     if 'password' in data and checkpw(data['password'].encode(), request.user.password.encode()):
-        cart = request.user.cart
-        if cart:
-            for cartItem in cart.cartItems:
-                cartItem.delete()
         store = request.user.store
         if store:
-            for ctg in store.categories:
-                for prd in ctg.products:
-                    for rev in prd.reviews:
-                        deleted_image(request.method, rev)
-                    deleted_image(request.method, prd)
-                deleted_image(request.method, ctg)
+            for prd in store.products:
+                deleted_image(request.method, prd)
             deleted_image(request.method, store)
-        reviews = request.user.reviews
-        if reviews:
-            for rev in reviews:
-                deleted_image(request.method, rev)
 
         deleted_image(request.method, request.user)
         AUTH.destroy_session()

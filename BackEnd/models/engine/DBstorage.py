@@ -4,9 +4,9 @@ from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
 from models.base import Base
-from models.user import User
-from models.cart import Cart, CartItem
-from models.order import Order
+from models.user import User, Address, WishList, Search
+from models.cart import CartItem
+from models.order import Order, OrderItem
 from models.review import Review
 from models.product import Product
 from models.category import Category
@@ -14,10 +14,12 @@ from models.store import Store
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 classes = {
-    "Cart": Cart, "CartItem": CartItem,
+    "User": User, "Store": Store,
+    "Address": Address, "WishList": WishList,
+    "Search": Search, "CartItem": CartItem,
+    "OrderItem": OrderItem,
     "Order": Order, "Review": Review,
-    "Product": Product, "Category": Category,
-    "User": User, "Store": Store
+    "Product": Product, "Category": Category
 }
 
 ignore = (

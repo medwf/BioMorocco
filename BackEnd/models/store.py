@@ -7,18 +7,17 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 
-class Store(BaseModel, Base):
+class Store(Base, BaseModel):
     """class product"""
     __tablename__ = "stores"
 
     # data
     name = Column(String(50), nullable=False, unique=False)
-    description = Column(TEXT, nullable=False)
+    desc = Column(TEXT, nullable=False)
     image = Column(String(255), nullable=True)
-
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
     # relationship
-    categories = relationship(
-        "Category", backref="store",
+    products = relationship(
+        "Product", backref="store",
         cascade="all, delete, save-update")

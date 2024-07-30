@@ -2,28 +2,14 @@
 """Cart nd cart item  model"""
 from models.base import Base, BaseModel
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey, Boolean
+    Column, Integer, ForeignKey
 )
-from sqlalchemy.orm import relationship
 
 
-class Cart(BaseModel, Base):
-    """class cart"""
-    __tablename__ = "carts"
-
-    # data
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-
-    # relationship
-    cartItems = relationship(
-        "CartItem", backref="cart",
-        cascade="all, delete, save-update")
-
-
-class CartItem(BaseModel, Base):
+class CartItem(Base, BaseModel):
     """class cart items"""
     __tablename__ = "cartItems"
 
-    quantity = Column(Integer, nullable=False)
-    cart_id = Column(Integer, ForeignKey('carts.id'), nullable=False)
+    quantity = Column(Integer, nullable=False, default=1)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     product_id = Column(Integer, ForeignKey('products.id'), nullable=False)

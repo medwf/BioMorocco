@@ -21,8 +21,10 @@ UPLOAD_FOLDER = '/api/v1/static/uploads'
 
 
 app.register_blueprint(app_views)
-CORS(app, resources={r"/api/v1/*": {"origins": "*"}},
-     supports_credentials=True)
+CORS(
+    app, resources={r"/api/v1/*": {"origins": "*"}},
+    supports_credentials=True
+)
 
 Email = SendEmail()
 AUTH = SessionDBAuth()
@@ -45,7 +47,7 @@ app.register_blueprint(swaggerui_blueprint)
 @app.before_request
 def beforeRequest() -> str:
     """handle auth before request"""
-    print(request.path)
+    # print(request.path)
     # print(request.method)
     if AUTH.require_auth(request.method, request.path, [
             '/api/v1/',

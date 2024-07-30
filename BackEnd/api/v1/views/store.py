@@ -9,11 +9,8 @@ def yourStore():
     """get store data"""
     store = request.user.store
     if store:
-        return jsonify({
-            "store": store.to_dict(),
-            "categories": [ctg.to_dict() for ctg in store.categories]
-        }), 200
-    return jsonify({"error": "not store found create one!"}), 400
+        return jsonify({"store": store.to_dict()}), 200
+    return jsonify({"error": "Store Not Found Create one!"}), 400
 
 
 @app_views.route("/store", methods=['PUT'], strict_slashes=False)
@@ -23,11 +20,10 @@ def updateStore():
     import json
 
     data = request.form.get("data", None)
-    if data:
-        try:
-            data = json.loads(data)
-        except json.JSONDecodeError:
-            data = None
+    try:
+        data = json.loads(data)
+    except json.JSONDecodeError:
+        data = None
 
     if not data and 'file' not in request.files:
         return jsonify({"error": "check your data send!"})
@@ -60,11 +56,11 @@ def createStore():
 
     store = request.user.store
     if not store:
-        if 'name' in data and 'description' in data:
+        if 'name' in data and 'desc' in data:
             store = Store(
                 user_id=request.user.id,
                 name=data['name'],
-                description=data['description']
+                desc=data['desc']
             )
 
             store.save()
@@ -85,12 +81,8 @@ def deleteStore():
     store = request.user.store
     if store:
         if 'password' in data and checkpw(data['password'].encode(), request.user.password.encode()):
-            for ctg in store.categories:
-                for prd in ctg.products:
-                    for rev in prd.reviews:
-                        rev.delete()
-                    prd.delete()
-                ctg.delete()
+            for prd in store.products:
+                prd.delete()
             deleted_image(request.method, store)
             store.delete()
             storage.save()

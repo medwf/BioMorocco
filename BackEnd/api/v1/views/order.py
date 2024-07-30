@@ -2,7 +2,7 @@ from flask import jsonify, request, abort
 from api.v1.views import app_views
 from models import storage
 from models.product import Product
-from models.order import Order
+from models.order import Order, OrderItem
 
 
 @app_views.route("/product/<int:product_id>/orders", methods=['GET'], strict_slashes=False)
@@ -23,8 +23,6 @@ def Orders(product_id=None):
 def createOrders(product_id=None):
     """POST order data"""
     from api.v1.app import Email
-    from models.category import Category
-    from models.store import Store
     from models.user import User
 
     data = request.get_json(force=True, silent=True)
@@ -37,8 +35,7 @@ def createOrders(product_id=None):
         if not product:
             return jsonify({'error': f'Product id={product_id} Not Found!'}), 404
         quantity = data['quantity']
-        total_price = (product.price * quantity) if request.user.country == 'Morocco' else (
-            product.price * quantity) + 100
+        total_price = product.price * quantity
         products = [(product, quantity, total_price)]
 
     elif 'product_ids' in data:
@@ -54,8 +51,7 @@ def createOrders(product_id=None):
                         return jsonify({'error': 'Product Not Found!'}), 404
 
                     quantity = cartItem.quantity
-                    total_price = (product.price * quantity) if request.user.country == 'Morocco' else (
-                        product.price * quantity) + 100
+                    total_price = product.price * quantity
                     products.append((product, quantity, total_price))
     else:
         return jsonify({'error': 'Product Not Found!'}), 404
@@ -66,22 +62,27 @@ def createOrders(product_id=None):
         return jsonify({"error": "The stock of this product not available for Now!"}), 400
 
     SEND_EMAIL_For_Each_Store = {}
+    order = Order(
+        user_id=request.user.id,
+        valid=0,
+        total=0
+    )
 
     for (product, quantity, total_price) in products:
 
-        order = Order(
-            status="pending",
+        order_item = OrderItem(
+            # status="pending",
             quantity=quantity,
             total_price=total_price,
-            orderValid=0,
             user_id=request.user.id,
             product_id=product.id
         )
-        storage.update(product, stock=(product.stock - order.quantity))
-        storage.new(order)
-        storage.save()
-        category = storage.get(Category, product.category_id)
-        store = storage.get(Store, category.store_id)
+        order.total += total_price
+
+        storage.update(product, stock=(product.stock - order_item.quantity))
+        order_item.save()
+
+        store = storage.get(Product, product.store_id)
         owner = storage.get(User, store.user_id)
 
         # sending msg tell then that your store product is last then reminder stock.
@@ -100,11 +101,14 @@ def createOrders(product_id=None):
                 (product, quantity, total_price)
             )
 
+    order.save()
+    storage.save()
+
     # sending msg to user store tell them he have an order by sending name and phone and address.
-    for id, prds in SEND_EMAIL_For_Each_Store.items():
+    for id, prd in SEND_EMAIL_For_Each_Store.items():
         own = storage.get(User, id)
         content = Email.create_content_for_new_order(
-            own, prds, request.user
+            own, prd, request.user
         )
         Email.sendEmail(own.email, content)
     return jsonify({"message": "Order created successfully"}), 200

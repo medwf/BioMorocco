@@ -10,12 +10,16 @@ def users():
     import json
 
     data = request.form.get("data", None)
+    # print("*", data, type(data))
     if data:
         try:
             data = json.loads(data)
+            # print("**", data, type(data))
         except json.JSONDecodeError:
+            # print("**", data, type(data))
             data = None
 
+    # print("***", data, type(data))
     if not data and 'file' not in request.files:
         return jsonify({'error': 'check your data Send!'}), 400
 
@@ -32,10 +36,10 @@ def users():
                 )
                 upload_image(request, user)
                 Email.sendEmail(email, content)
-                return jsonify({'email': email, 'message': 'user created'}), 201
-            return jsonify({'message': 'Email already registered'}), 400
-        return jsonify({'message': 'should have email and password'}), 400
-    return jsonify({'message': 'check your data send'}), 400
+                return jsonify({"message": f'User {user.email} created successfully'}), 201
+            return jsonify({'error': 'Email already registered'}), 400
+        return jsonify({'error': 'should have email and password'}), 400
+    return jsonify({'error': 'check your data send'}), 400
 
 
 @app_views.route('/login', methods=['POST'], strict_slashes=False)
@@ -76,8 +80,8 @@ def get_forget_password():
                 f"{user.first_name} {user.last_name}", user.email, code
             )
             Email.sendEmail(user.email, content)
-            return jsonify({'message': 'Code Created Successfully, You have 2m to change password Check your Email'}), 200
-        return jsonify({'error': 'No user Found'}), 404
+            return jsonify({'message': 'Code Sended Successfully'}), 200
+        return jsonify({'error': 'User Not Found'}), 404
     return jsonify({'error': 'check your data send'}), 400
 
 
