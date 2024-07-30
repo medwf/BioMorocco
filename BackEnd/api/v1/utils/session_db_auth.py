@@ -72,12 +72,9 @@ class SessionDBAuth():
 
     def register_user(self, data: Dict) -> User:
         """register user based on email and password"""
-        from models.cart import Cart
         user = storage.find_user_by(email=data['email'])
         if not user:
             user = storage.add_user(data)
-            cart = Cart(user_id=user.id)
-            cart.save()
             return user
         return None
 

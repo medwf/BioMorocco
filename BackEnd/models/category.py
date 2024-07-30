@@ -13,9 +13,9 @@ class Category(BaseModel, Base):
 
     # data
     name = Column(String(45), nullable=False, unique=True)
-    description = Column(TEXT, nullable=True)
+    desc = Column(TEXT, nullable=True)
+    benefit = Column(TEXT, nullable=True)
     image = Column(String(255), nullable=True)
-    store_id = Column(Integer, ForeignKey('stores.id'), nullable=False)
 
     # relationship
     products = relationship(

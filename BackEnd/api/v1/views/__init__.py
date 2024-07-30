@@ -15,3 +15,6 @@ from api.v1.views.product import *
 from api.v1.views.cartItem import *
 from api.v1.views.review import *
 from api.v1.views.order import *
+from api.v1.views.address import *
+from api.v1.views.search import *
+from api.v1.views.wishList import *

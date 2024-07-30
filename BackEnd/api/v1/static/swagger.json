@@ -8,27 +8,39 @@
   "tags": [
     {
       "name": "Authentication",
-      "description": "Operations related to user authentication"
+      "description": "Operations related to user Authentication"
     },
     {
       "name": "User",
-      "description": "Operations related to users"
+      "description": "Operations related to Users"
+    },
+    {
+      "name": "WishList",
+      "description": "Operations related to user Wishlists"
+    },
+    {
+      "name": "Search",
+      "description": "Operations related to users Searches"
+    },
+    {
+      "name": "Address",
+      "description": "Operations related to user Addresses"
     },
     {
       "name": "CartItem",
-      "description": "Operations related to items in the shopping cart"
+      "description": "Operations related to items in the shopping Cart"
     },
     {
       "name": "Store",
-      "description": "Operations related to stores"
+      "description": "Operations related to Stores"
     },
     {
       "name": "Category",
-      "description": "Operations related to product categories"
+      "description": "Operations related to product Categories"
     },
     {
       "name": "Product",
-      "description": "Operations related to products"
+      "description": "Operations related to Products"
     },
     {
       "name": "Order",
@@ -36,10 +48,779 @@
     },
     {
       "name": "Review",
-      "description": "Operations related to product reviews"
+      "description": "Operations related to product Reviews"
     }
   ],
   "paths": {
+    "/api/v1/addresses": {
+      "get": {
+        "tags": ["Address"],
+        "summary": "Get all addresses (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get all addresses for an user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "log in or sign up!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Address"],
+        "summary": "Create An address (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "country": { "type": "string" },
+                  "city": { "type": "string" },
+                  "state": { "type": "string" },
+                  "address": { "type": "string" },
+                  "phone": { "type": "string" },
+                  "valid": { "type": "integer" }
+                },
+                "required": ["country", "state", "city", "address", "phone"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "create an addresses for an user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "log in or sign up!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/addresses/{address_id}": {
+      "get": {
+        "tags": ["Address"],
+        "summary": "Get address (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "address_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get an address successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "log in or sign up!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Address"],
+        "summary": "update a address for user (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "address_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "country": { "type": "string" },
+                  "city": { "type": "string" },
+                  "state": { "type": "string" },
+                  "address": { "type": "string" },
+                  "phone": { "type": "string" },
+                  "valid": { "type": "integer" }
+                },
+                "required": ["country", "state", "city", "address", "phone"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "address updated successfully",
+            "headers": {
+              "Set-Cookie": {
+                "description": "Session ID",
+                "schema": {
+                  "type": "string",
+                  "example": "session_id=abcd1234; Path=/; HttpOnly"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "updated successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Address"],
+        "summary": "Delete a address for user",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "address_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deleted address successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "address deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "log in or sign up!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/v1/wishlists": {
+      "get": {
+        "tags": ["WishList"],
+        "summary": "Get all wishlists (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "wishlist added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "password added successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "login or sign up!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["WishList"],
+        "summary": "Create An address (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "product_id": { "type": "integer", "example": 1 }
+                },
+                "required": ["product_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "wishlist added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "login or sign up!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/wishlists/{wishlist_id}": {
+      "get": {
+        "tags": ["WishList"],
+        "summary": "Get specific wishlist (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wishlist_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get specific wishlist successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "log in or sign up!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["WishList"],
+        "summary": "Delete a wishlist for user (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wishlist_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wishlist deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "login or sign up!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/v1/searches": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Get all Search (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get all search successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password reset successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Not store found create one!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Search"],
+        "summary": "Add a Search (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "search added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "login or sign up!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/searches/{search_id}": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Get specific address (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password reset successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "login or sign up!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Search"],
+        "summary": "Delete a address for user (requires session_id in cookies)",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Session ID missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "log in or sign up!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
     "/api/v1/signUp": {
       "post": {
         "tags": ["Authentication"],
@@ -58,27 +839,12 @@
                   "data": {
                     "type": "object",
                     "properties": {
-                      "email": { "type": "string", "format": "email" },
-                      "password": { "type": "string", "format": "password" },
-                      "first_name": { "type": "string" },
                       "last_name": { "type": "string" },
-                      "country": { "type": "string" },
-                      "city": { "type": "string" },
-                      "state": { "type": "string" },
-                      "address": { "type": "string" },
-                      "phone": { "type": "string" }
+                      "first_name": { "type": "string" },
+                      "email": { "type": "string", "format": "email" },
+                      "password": { "type": "string", "format": "password" }
                     },
-                    "required": [
-                      "email",
-                      "password",
-                      "first_name",
-                      "last_name",
-                      "country",
-                      "city",
-                      "state",
-                      "address",
-                      "phone"
-                    ]
+                    "required": ["email", "password", "first_name", "last_name"]
                   }
                 }
               }
@@ -375,15 +1141,7 @@
                           "example": "user@example.com"
                         },
                         "first_name": { "type": "string", "example": "John" },
-                        "last_name": { "type": "string", "example": "Doe" },
-                        "country": { "type": "string", "example": "USA" },
-                        "city": { "type": "string", "example": "New York" },
-                        "state": { "type": "string", "example": "NY" },
-                        "address": {
-                          "type": "string",
-                          "example": "123 Main St"
-                        },
-                        "phone": { "type": "string", "example": "555-5555" }
+                        "last_name": { "type": "string", "example": "Doe" }
                       }
                     }
                   }
@@ -795,7 +1553,7 @@
                     "type": "object",
                     "properties": {
                       "name": { "type": "string", "format": "name" },
-                      "description": {
+                      "desc": {
                         "type": "string",
                         "format": "description"
                       }
@@ -923,7 +1681,7 @@
                       "properties": {
                         "id": { "type": "integer", "example": 1 },
                         "name": { "type": "string", "example": "Store Name" },
-                        "description": {
+                        "desc": {
                           "type": "string",
                           "example": "Store Description"
                         },
@@ -984,7 +1742,7 @@
                     "type": "object",
                     "properties": {
                       "name": { "type": "string", "format": "name" },
-                      "description": {
+                      "desc": {
                         "type": "string",
                         "format": "description"
                       }
@@ -1128,7 +1886,7 @@
                     "type": "object",
                     "properties": {
                       "name": { "type": "string", "format": "name" },
-                      "description": {
+                      "desc": {
                         "type": "string",
                         "format": "description"
                       }
@@ -1264,7 +2022,7 @@
                       "properties": {
                         "id": { "type": "integer", "example": 1 },
                         "name": { "type": "string", "example": "Product Name" },
-                        "description": {
+                        "desc": {
                           "type": "string",
                           "example": "Product Description"
                         },
@@ -1384,7 +2142,7 @@
                         "type": "string",
                         "example": "New Product location"
                       },
-                      "description": {
+                      "desc": {
                         "type": "string",
                         "example": "New Product Description"
                       }
@@ -1540,7 +2298,7 @@
                         "type": "string",
                         "example": "New Product location"
                       },
-                      "description": {
+                      "desc": {
                         "type": "string",
                         "example": "New Product Description"
                       }

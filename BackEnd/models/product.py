@@ -7,31 +7,42 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 
-class Product(BaseModel, Base):
+class Product(Base, BaseModel):
     """class product"""
     __tablename__ = "products"
 
     name = Column(String(45), nullable=False, unique=True)
-    description = Column(TEXT, nullable=True)
+    desc = Column(TEXT, nullable=True)
     price = Column(Integer, nullable=False)
     stock = Column(Integer, nullable=False)
     reminder_stock = Column(Integer, nullable=False, default=10)
     images = Column(TEXT, nullable=False)
 
     # should add sum of rating in review / num of review
-    total_rating = Column(Integer, nullable=True, default=5)
+    total_rating = Column(Integer, nullable=True)
     location = Column(String(255), nullable=False)
 
     # make table for category
     category_id = Column(Integer, ForeignKey(
-        'categories.id'), nullable=False)
+        'categories.id'), nullable=False
+    )
+
+    store_id = Column(Integer, ForeignKey(
+        'stores.id'), nullable=False
+    )
 
     # relationship
     cartItems = relationship(
-        'CartItem', backref='product', cascade='all, delete, save-update')
+        'CartItem', backref='product',
+        cascade='all, delete, save-update'
+    )
 
-    orders = relationship(
-        'Order', backref='product', cascade='all, delete, save-update')
+    orderItems = relationship(
+        'OrderItem', backref='product',
+        cascade='save-update, merge, refresh-expire, expunge'
+    )
 
     reviews = relationship(
-        'Review', backref='product', cascade='all, delete, save-update')
+        'Review', backref='product',
+        cascade='save-update, merge, refresh-expire, expunge'
+    )

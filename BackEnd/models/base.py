@@ -7,7 +7,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.ext.declarative import declarative_base
 
-time = "%Y-%m-%dT%H:%M:%S.%f"
+time = "%Y-%m-%d %H:%M:%S"
 
 Base = declarative_base()
 
@@ -63,7 +63,7 @@ class BaseModel:
         if not save_fs and "password" in new_dict:
             del new_dict["password"]
 
-        keys = ["_sa_instance_state", "userValidEmail"]
+        keys = ["_sa_instance_state"]
         for key in keys:
             if key in new_dict:
                 del new_dict[key]
